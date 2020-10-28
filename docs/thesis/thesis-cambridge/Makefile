@@ -48,7 +48,7 @@ PNMTOPS=pnmtops -rle -noturn -nosetpage
 	fig2dev -L pdftex_t -p $*.pdftex $< $*.pdftex_t
 	fig2dev -L pdftex $< $*.pdftex
 
-all: thesis.pdf   # or thesis.ps
+all: ../pdf/20201012_JM_thesis.pdf   # or thesis.ps
 
 clean:
 	rm -f *~ *.dvi *.log *.bak *.aux *.toc *.ps *.eps *.blg *.bbl

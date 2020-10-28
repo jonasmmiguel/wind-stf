@@ -50,18 +50,20 @@ In this equation, $D$ and $H$ are design variables. The air density $\rho$ may v
 
 In operation, the dominant source of variability for the generated power is $v$. Being climate and weather-dependent, it is also the main reason for the intermittency and non-dispatchability of wind power \cite{demeo2006natural}. This dependence motivates the usage by designers and generation operators of the so-called \textit{wind-to-power curves} (or \textit{power curves}), which are semi-empirical relations that allow one to determine the generated power $P$ by knowing the wind velocity $v$.
 
-As design, planning, operation, maintenance, and trading of wind power are subject to such high variabilities, forecasting wind power generation (WPG) provides value for the different players in the electricity grid, illustrated in \ref{fig:electricity_grid_players}. Table \ref{tab:wind_power_forecasting_reqs} gives some examples of how various system operation aspects can profit from forecasts at different time scales.
-\begin{table}[H]\label{tab:wind_power_forecasting_reqs}
+As design, planning, operation, maintenance, and trading of wind power are subject to such high variabilities, forecasting wind power generation (WPG) provides value for the different players in the electricity grid, illustrated in \ref{fig:electricity_grid_players}. Table \ref{tab:forecasting_interests} gives some examples of how various system operation aspects may profit from forecasts at different time scales.
+
+\begin{table}[h]
     \centering
     \caption{Forecasting horizons in wind power generation and main applications.}
     \begin{tabular}{ccc}
-    \hline
-    \begin{tabular}[c]{@{}c@{}}Forecasting\\ Horizon\end{tabular} & Definition             & Applications                                                         \\ \hline
-    Very Short                                                    & $\sim secs\ - 0.5h $   & turbine control, load tracking          \\
-    Short                                                         & $0.5h - 72h$           & pre-load sharing                                                     \\
-    Medium                                                        & $72h\ – 1\ week $      & power system management, energy trading \\
-    Long                                                          & $1\ week\  – 1\ year $ & turbines maintenance scheduling                                      \\ \hline
+        \hline
+        \begin{tabular}[c]{@{}c@{}}Forecasting\\ Horizon\end{tabular} & Definition             & Applications                                                         \\ \hline
+        Very Short                                                    & $\sim secs\ - 0.5h $   & turbine control, load tracking          \\
+        Short                                                         & $0.5h - 72h$           & pre-load sharing                                                     \\
+        Medium                                                        & $72h\ – 1\ week $      & power system management, energy trading \\
+        Long                                                          & $1\ week\  – 1\ year $ & turbines maintenance scheduling                                      \\ \hline
     \end{tabular}
+    \label{tab:forecasting_interests}
 \end{table}
 
 Power generation from single turbines can also be aggregated at different levels.
@@ -144,21 +146,23 @@ By summarizing the forecast error distribution into a reduced set of values, for
 
 On the one hand, single metrics concisely convey information about the error distribution, which is useful for comparing models and making decisions. On the other hand, a single metric cannot convey all aspects of the error distribution, and often using more than one metric becomes necessary to ensure sufficiency \cite{armstrong2002principles}. Therefore, deciding on a group of metrics often involves a trade-off between conciseness and sufficiency.
 
-Metrics differ in interpretability, scale invariance, sensitivity to outliers, symmetric penalization of negative and positive errors, and behavior predictability as $y_t \rightarrow 0$ \cite{hyndman2006metrics}. Therefore, it is important that the choice on the metrics set is coherent with the application requirements \cite{armstrong2002principles}. For example, while failing to forecast single sudden peaks in local wind speed (wind gusts) might not be important in wind farm planning, it might be a primary requirement for wind turbine operation. Table \ref{tab:table_metrics} summarizes sensitivities for the presented metrics.
-\begin{table}[H]
+Metrics differ in interpretability, scale invariance, sensitivity to outliers, symmetric penalization of negative and positive errors, and behavior predictability as $y_t \rightarrow 0$ \cite{hyndman2006metrics}. Therefore, it is important that the choice on the metrics set is coherent with the application requirements \cite{armstrong2002principles}. For example, while failing to forecast single sudden peaks in local wind speed (wind gusts) might not be important in wind farm planning, it might be a primary requirement for wind turbine operation. 
+Table \ref{table_metrics} summarizes sensitivities for the presented metrics.
+\begin{table}[h]
     \centering
     \caption{Forecasting accuracy metrics and their sensitivities to scale and outliers.}
+    \label{table_metrics}
     \begin{tabular}{llcc}
-    \hline
-    Alias  & Name                                       & \begin{tabular}[c]{@{}c@{}}Scale\\ Sensitivity\end{tabular} & \begin{tabular}[c]{@{}c@{}}Outliers\\ Sensitivity\end{tabular} \\ \hline
-    RMSE   & Root Mean Squared Error                    & \fullcirc                                    & \fullcirc                                       \\
-    MAE    & Mean Absolute Error                        & \fullcirc                                    & \fullcirc                                       \\
-    MASE   & Mean Absolute Scaled Error                 & \emptycirc                                   & \fullcirc                                       \\
-    MAPE   & Mean Absolute Percentual Error             & \emptycirc                                   & \fullcirc                                       \\
-    MdAPE  & Median Absolute Percentual Error           & \emptycirc                                   & \emptycirc                                      \\
-    sMAPE  & Symmetric Mean Absolute Percentual Error   & \emptycirc                                   & \emptycirc                                      \\
-    sMdAPE & Symmetric Median Absolute Percentual Error & \emptycirc                                   & \emptycirc                                      \\
-    MdRAE  & Median Relative Absolute Error             & \emptycirc                                   & \emptycirc                                      \\ \hline
+        \hline
+        Alias  & Name                                       & \begin{tabular}[c]{@{}c@{}}Scale\\ Sensitivity\end{tabular} & \begin{tabular}[c]{@{}c@{}}Outliers\\ Sensitivity\end{tabular} \\ \hline
+        RMSE   & Root Mean Squared Error                    & \fullcirc                                    & \fullcirc                                       \\
+        MAE    & Mean Absolute Error                        & \fullcirc                                    & \fullcirc                                       \\
+        MASE   & Mean Absolute Scaled Error                 & \emptycirc                                   & \fullcirc                                       \\
+        MAPE   & Mean Absolute Percentual Error             & \emptycirc                                   & \fullcirc                                       \\
+        MdAPE  & Median Absolute Percentual Error           & \emptycirc                                   & \emptycirc                                      \\
+        sMAPE  & Symmetric Mean Absolute Percentual Error   & \emptycirc                                   & \emptycirc                                      \\
+        sMdAPE & Symmetric Median Absolute Percentual Error & \emptycirc                                   & \emptycirc                                      \\
+        MdRAE  & Median Relative Absolute Error             & \emptycirc                                   & \emptycirc                                      \\ \hline
     \end{tabular}
 \end{table}
 
@@ -297,7 +301,7 @@ Below we present selected deep learning methods helpful for understanding curren
 \end{figure}
 
 \noindent
-\textbf{LSTM (Long-Short Term Memory)} is a type of RNN, and improves on its basic design most importantly by including an long memory state which is allowed to be transferred across several update steps with only minimal changes (superior horizontal line inside the repeating module in \ref{fig:lstm}. This allows information to persist across many cell updates, thus making it possible to capture long-term dependencies. The extent to which this long memory state is preserved is controlled by forget gate, illustrated in \ref{fig:lstm}) by the leftmost vertical path inside the cell. The other paths represent other gated state transfers, which determine how (a) the previous cell state, (b) the previous long memory state and (c) the current cell inputs are combined and passed to the next cell iteration and as input to deeper layers.
+\textbf{LSTM (Long-Short Term Memory)} is a type of RNN, and improves on its basic design most importantly by including an long memory state which is allowed to be transferred across several update steps with only minimal changes (superior horizontal line inside the repeating module in \ref{fig:lstm}. This allows information to persist across many cell updates, thus making it possible to capture long-term dependencies. The extent to which this long memory state is preserved is controlled by forget gate, illustrated in figure \ref{fig:lstm}) by the leftmost vertical path inside the cell. The other paths represent other gated state transfers, which determine how (a) the previous cell state, (b) the previous long memory state and (c) the current cell inputs are combined and passed to the next cell iteration and as input to deeper layers.
 \begin{figure}[H]
 	\centering
     \caption{Basic LSTM architecture in its unfolded representation (adapted from \cite{paneru2015lstm}). }

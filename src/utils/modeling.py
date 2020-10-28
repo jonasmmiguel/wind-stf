@@ -1,8 +1,10 @@
 from typing import Dict, Any
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
 import pandas as pd
+from src.learning_algs.holtwinters import ExponentialSmoothing, ExponentialSmoothingRNN
+from src.learning_algs.baselines import HistoricalMedian
 
 
+# TODO: make a 3-level abstraction like ForecastingModel{ DistrictwiseForecastingModel{ HMed, ... }}}
 class ForecastingModel:
     def __init__(self, modeling: Dict[str, Any]):
         self.modeling = modeling
@@ -13,7 +15,11 @@ class ForecastingModel:
     def fit(self, df):
         if self.modeling['mode'] == 'districtwise':
 
-            if self.modeling['approach'] == 'HW-ES':
+            if self.modeling['approach'] == 'HMed':
+                for district in self.modeling['targets']:
+                    self.submodels_[district] = HistoricalMedian(df[district]).fit()
+
+            elif self.modeling['approach'] == 'HW-ES':
                 for district in self.modeling['targets']:
                     self.submodels_[district] = ExponentialSmoothing(df[district], **self.modeling['hyperpars']).fit()
 

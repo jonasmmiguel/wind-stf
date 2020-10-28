@@ -1,0 +1,31 @@
+cv:
+    scheme: expanding window
+    relsize_shortest_train_window: 0.6  # 1.0 is the inference dataset size
+    n_passes: 0
+    steps_ahead: 1
+    size_forecast_window: 7
+
+
+modeling:
+  approach: HMed  # Historical Median
+  mode: districtwise
+  model_inference_window:
+      start: 2013-01-01
+      end: 2015-06-22
+  test_window:
+      start: 2015-06-23
+      end: 2015-06-29
+  preprocessing: None
+  hyperpars: None
+  targets:
+      - DEF0C
+      - DEF07
+      - DEF0B
+      - DEF05
+      - DEF0E
+
+
+evaluation:
+  - MAE
+  - RMSE
+  - MAPE

@@ -29,3 +29,4 @@ metrics_registered = {
     'RMSE': root_mean_squared_error,
     'MAPE': mean_absolute_percentage_error
 }
+

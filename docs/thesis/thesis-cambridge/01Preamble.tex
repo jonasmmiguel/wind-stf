@@ -5,9 +5,9 @@
 \RequirePackage{amssymb}
 \RequirePackage{xspace}
 \RequirePackage{pdfpages}
-\usepackage{multirow} %some tables
+\RequirePackage{multirow} %some tables
 % symbol-based footnotes
-\usepackage[symbol]{footmisc}
+\RequirePackage[symbol]{footmisc}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,7 +67,7 @@
 \newtheorem{example}{Example}[chapter]
 
 %% For bold math
-\usepackage{bm}
+\RequirePackage{bm}
 
 
 
@@ -94,10 +94,10 @@
 %% `./figures/`)
 %%
 \graphicspath{{./figures/}}
-\usepackage{float}
+\RequirePackage{float}
 
 %% For drawing circles and half-filled circles
-\usepackage{tikz}
+\RequirePackage{tikz}
 \newcommand*\emptycirc[1][1ex]{\tikz\draw (0,0) circle (#1);}
 \newcommand*\halfcirc[1][1ex]{%
   \begin{tikzpicture}

@@ -4,6 +4,7 @@
 We developed a pipeline (fig. \ref{fig:project_pipeline}) comprising (1) a data engineering pipeline, and (2) a data science pipeline).
 We devoted significant part of our effort into following existing and developing best practices in data science development standards, so as to ensure reproducibility of results as well as reusability of methods and tools.
 One of the key Python frameworks we used to attain that is the McKinsey's Kedro \cite{kedro}.
+The complete implementation is available in \cite{windstfgithub}.
 
 \begin{figure}[H]
 	\centering
@@ -65,7 +66,7 @@ The data science pipeline (fig. \ref{fig:pipeline_ds}) processes (a) user-define
 \noindent
 \textbf{Get Initial Adjacency Matrix.}  We calculate the matrix of the pairwise Euclidean distances and transform it into an adjacency matrix.
 For initializing the values of the (constant) adjacency matrix in DCRNN or the self-adaptive adjacency matrix in the Graph WaveNet case, we follow the procedure in \cite{li2018dcrnn, wu2019graphwavenet} apply the Gaussian Kernel on the distances matrix, so that $A_{ij} = exp(-D_{ij}^2/2\sigma_{D}^2)$, where $\sigma_{D}$ is the standard deviation of the distances matrix.
-Also as in \cite{DCRNN}, we promote sparsity in the adjacency matrix for computational efficiency by thresholding the entries in the adjacency matrix.
+Also as in \cite{li2018dcrnn}, we promote sparsity in the adjacency matrix for computational efficiency by thresholding the entries in the adjacency matrix.
 However, instead of defining an arbitrary threshold value for $A_{ij}$, we prune adjacency values when the distances they are calculated from surpasses the decorrelation distance of 150 km.
 This node function is only processed in experiments with DCRNN and Graph WaveNet, as they are the only methods considered which rely on an adjacency matrix.
 

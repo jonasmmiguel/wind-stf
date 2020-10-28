@@ -7,7 +7,7 @@ cv:
 
 
 modeling:
-  approach: HW-ES
+  approach: naive
   mode: districtwise
   model_inference_window:
       start: 2013-01-01
@@ -17,11 +17,9 @@ modeling:
       end: 2015-06-29
   preprocessing:
       - get_quantile_equivalent_normal_dist
-      - make_strictly_positive
   hyperpars:
-      trend: additive
-      seasonal: multiplicative
-      seasonal_periods: 7
+      estimator: mean  # should be one of [const]
+      reference_time: last_observation  # should be one of [last_observation, overall]
   targets:
       - DEF0C
       - DEF07
@@ -33,3 +31,4 @@ modeling:
 evaluation:
   - MAE
   - RMSE
+  - MAPE
