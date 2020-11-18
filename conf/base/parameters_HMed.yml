@@ -9,12 +9,11 @@ cv:
 modeling:
   approach: HMed  # Historical Median
   mode: districtwise
-  model_inference_window:
-      start: 2013-01-01
-      end: 2015-06-22
-  test_window:
-      start: 2015-06-23
-      end: 2015-06-29
+  train_horizon: (2013-01-01, 2014-12-31)  # base train horizon
+  n_extensions_of_train_horizon: 5  # None unless research purposes, #TODO: set seed
+  train_horizon_allowed_extension_range: (2015-01-01, 2015-12-31)  # None unless research purposes
+  forecast_horizon: 7
+  gap: None
   preprocessing: None
   hyperpars: None
   targets:

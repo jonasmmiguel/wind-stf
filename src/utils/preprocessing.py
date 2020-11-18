@@ -147,7 +147,6 @@ class Scaler(Pipeline):
         return self._inverse_transform
 
     def _inverse_transform(self, X):
-        #
         num_cols_X = X.shape[1]
         num_cols_dfskeleton = len(self.columns)
         is_X_partial = (num_cols_X < num_cols_dfskeleton)

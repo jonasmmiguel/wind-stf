@@ -33,13 +33,12 @@ Delete this when you start working on your own Kedro project.
 """
 # pylint: disable=invalid-name
 
-import logging
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
 from src.utils.preprocessing import registered_transformers, make_pipeline
-from src.utils.modeling import ForecastingModel
+from learning_algs.modeling import ForecastingModel
 
 from src.utils.metrics import metrics_registered
 
