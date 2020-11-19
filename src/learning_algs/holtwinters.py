@@ -15,7 +15,7 @@ class VectorExponentialSmoothing(ExponentialSmoothing):
         self.freq = 'D'
 
     def fit(self, y):
-        self.model = {col: super(y[col], **self.hyperpars).fit() for col in y}
+        self.model = {col: ExponentialSmoothing(y[col], **self.hyperpars).fit() for col in y}
         self.targets = y.columns
         self.freq = y.index.freq
         return self
