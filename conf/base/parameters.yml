@@ -1,18 +1,22 @@
-cv:
-    scheme: None
-    relsize_shortest_train_window: None  # 1.0 is the inference dataset size
-    n_passes: None
-    steps_ahead: None
-    size_forecast_window: None
+cv:  None
+#    scheme: None
+#    relsize_shortest_train_window: None       # 1.0 is the inference dataset size
+#    n_passes: None
+#    steps_ahead: None
+#    size_forecast_window: None
 
 
 modeling:
-  approach: HMed  # Historical Median
-  train_horizon: (2013-01-01, 2014-12-31)  # base train horizon
-  n_extensions_of_train_horizon: 5  # None unless research purposes, #TODO: set seed
-  train_horizon_allowed_extension_range: (2015-01-01, 2015-12-31)  # None unless research purposes
+  approach: HW-ES                             # Historical Median
+  temporal_resolution: D                      # daily resolution
+  model_inference_horizon:
+    start: 2013-01-01
+    end:                                      # a string, unless for research purposes
+      earliest_allowed: 2015-01-01
+      latest_allowed: 2015-12-31
+  n_splits: 5                                 # 1, unless for research purposes
+  gap: 0
   forecast_horizon: 7
-  gap: None
   preprocessing:
       - get_quantile_equivalent_normal_dist
       - make_strictly_positive

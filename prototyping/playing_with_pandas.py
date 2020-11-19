@@ -12,4 +12,6 @@ if __name__ == '__main__':
     print(f'Type is: {type(df)}')
     print(df.head(3))
 
-    [print(type(col)) for col in df]
+    # [print(type(col)) for col in df]
+
+    print(df[slice(0,4)])

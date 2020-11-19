@@ -37,10 +37,11 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
-from src.utils.preprocessing import registered_transformers, make_pipeline
-from learning_algs.modeling import ForecastingModel
+import random
 
+from src.utils.preprocessing import registered_transformers, make_pipeline
 from src.utils.metrics import metrics_registered
+from learning_algs.modeling import ForecastingModel
 
 
 def _sort_col_level(df: pd.DataFrame, levelname:str ='nuts_id'):
@@ -67,23 +68,6 @@ def _split_train_eval(df: pd.DataFrame, train_window, eval_window):
         'df_train': df[train],
         'df_eval': df[eval]
     }
-
-
-def split_modinfer_test(df: pd.DataFrame, modeling: dict) -> Tuple[Any, Any]:
-    infer_window = modeling['model_inference_window']
-    test_window = modeling['test_window']
-
-    infer = slice(
-        infer_window['start'],
-        infer_window['end']
-    )
-
-    test = slice(
-        test_window['start'],
-        test_window['end']
-    )
-
-    return df[infer], df[test]
 
 
 def build_spatiotemporal_dataset(
@@ -117,36 +101,122 @@ def build_spatiotemporal_dataset(
     return df_spatiotemporal
 
 
-def _get_last_train_idx(tss: pd.DataFrame, cv_splits_dict: dict):
-    longest_pass = list( cv_splits_dict.keys() )[-1]
-    y = _split_train_test(tss, cv_splits_dict, pass_id=longest_pass)
-    return y['train'].index[-1]
-
-
 def _load_model():
     pass
 
 
-def scale(df_infer: pd.DataFrame, modeling: List[str]) -> List[Any]:
+def scale(df: pd.DataFrame,
+          modeling: Dict[str, Any],
+          inference_test_splits_positions: Dict[int, Dict[str, Any]]) \
+        -> List[Dict]:
+    '''
+
+    :param df:
+    :param modeling:
+    :param inference_test_splits_positions:
+    :return:
+        df_infer_scaled: e.g. {O: <pd.DataFrame>, 1: <pd.DataFrame>, ..., n_splits-1: <pd.DataFrame>}
+        scaler:          e.g. {O: <Scaler>, 1: <Scaler>, ..., n_splits-1: <Scaler>}
+    '''
+
     preprocessing = modeling['preprocessing']
 
-    # instantiate pipeline with steps defined in preprocessing params
-    scaler = make_pipeline(
-        *[registered_transformers[step] for step in preprocessing]
-    )
+    df_infer_scaled = {}
+    scaler = {}
+    for split in inference_test_splits_positions.keys():
+        df_infer = df[ inference_test_splits_positions[split]['infer'] ]
 
-    scaler = scaler.fit(
-        df_infer
-    )
+        # instantiate pipeline with steps defined in preprocessing params
+        scaler[split] = make_pipeline(
+            *[registered_transformers[step] for step in preprocessing]
+        )
 
-    # transformation output is a numpy array
-    df_infer_scaled = pd.DataFrame(
-        data=scaler.transform(df_infer),
-        index=df_infer.index,
-        columns=df_infer.columns,
-    )
+        scaler[split] = scaler[split].fit( df_infer )
+
+        # transformation output is a numpy array
+        df_infer_scaled[split] = pd.DataFrame(
+            data=scaler[split].transform(df_infer),
+            index=df_infer.index,
+            columns=df_infer.columns,
+        )
 
     return [df_infer_scaled, scaler]
+
+
+def define_inference_test_splits(modeling: Dict[str, Any]) -> Dict[int, Dict[str, Any]]:
+    freq = modeling['temporal_resolution']
+    gap = pd.to_timedelta(modeling['gap'], freq)
+    forecast_horizon = pd.to_timedelta(modeling['forecast_horizon'], freq)
+    modinfer_window_start = modeling['model_inference_horizon']['start']
+    modinfer_window_end_earliest = modeling['model_inference_horizon']['end']['earliest_allowed']
+    modinfer_window_end_latest = modeling['model_inference_horizon']['end']['latest_allowed']
+    n_splits = modeling['n_splits']
+
+    inference_test_splits_positions = {}
+    for split in range(n_splits):
+        modinfer_window_end = random.choice(
+            pd.date_range(start=modinfer_window_end_earliest,
+                          end=modinfer_window_end_latest - gap - forecast_horizon,
+                          freq=freq)
+        )
+
+        model_inference_window = slice(modinfer_window_start,
+                                       modinfer_window_end)
+
+        test_window = slice(modinfer_window_end + gap,
+                            modinfer_window_end + gap + forecast_horizon)
+
+        inference_test_splits_positions[split] = {
+            'infer': model_inference_window,
+            'test': test_window
+        }
+
+    return inference_test_splits_positions
+
+
+def split_modinfer_test(df: pd.DataFrame, modeling: dict) -> Tuple[Any, Any]:
+    infer_window = modeling['model_inference_window']
+    test_window = modeling['test_window']
+
+    infer = slice(
+        infer_window['start'],
+        infer_window['end']
+    )
+
+    test = slice(
+        test_window['start'],
+        test_window['end']
+    )
+
+    return df[infer], df[test]
+
+
+def train(df_infer_scaled: pd.DataFrame,
+          modeling: Dict[str, Any],
+          # cv: Dict[str, Any]
+          ) -> Dict[int, Dict[str, Any]]:
+    # TODO: reduce memory usage. Probably too high.
+    # TODO: enable training for every CV-split.
+    model = {}
+
+    for infer_test_split in range( modeling['n_splits'] ):
+        df = df_infer_scaled[infer_test_split]
+
+        # ignore all vars we don't want to model
+        targets = modeling['targets']
+        df = df[targets]
+
+        model[infer_test_split] = {}
+        # if cv:
+        #     # train for every cv (train-val) split
+        #     for cv_split in train_val_splits_positions.keys():
+        #         df_train = df[train_val_splits_positions[cv_split]['train']]
+        #         model[infer_test_split][cv_split] = ForecastingModel(modeling).fit(df_train)
+
+        # train model on whole inference dataset
+        model[infer_test_split]['df_infer_scaled'] = ForecastingModel(modeling).fit(df)
+
+    return model
 
 
 def define_cvsplits(cv_params: Dict[str, Any], df_infer: pd.DataFrame) -> Dict[str, Any]:  # Dict[str, List[pd.date_range, List[str]]]:
@@ -176,7 +246,7 @@ def define_cvsplits(cv_params: Dict[str, Any], df_infer: pd.DataFrame) -> Dict[s
     if cv_method == 'expanding window':
         cv_splits = {}
 
-        # max train size so that train  + gap (steps_ahead) + val still fit in inference data
+        # max train size so that train  + gap (steps_ahead) + val still fit in inference window
         relsize_longest_train_window = 1 - ((steps_ahead - 1) + size_forecasting_window) / len(df_infer)
 
         window_relsize = np.linspace(
@@ -198,26 +268,6 @@ def define_cvsplits(cv_params: Dict[str, Any], df_infer: pd.DataFrame) -> Dict[s
 
     else:
         raise NotImplementedError(f'CV method not recognized: {cv_method}')
-
-
-def cv_train(df: pd.DataFrame,
-             modeling: Dict[str, Any],
-             splits_positions: Dict[str, Any]) -> Dict[str, Any]:
-    model = {}
-
-    # ignore all vars we don't want to model
-    targets = modeling['targets']
-    df = df[targets]
-
-    # train for every cv split
-    for pass_id in splits_positions.keys():
-        df_train = df[splits_positions[pass_id]['train']]
-        model[pass_id] = ForecastingModel(modeling).fit(df_train)
-
-    # train model on whole inference dataset
-    model['full'] = ForecastingModel(modeling).fit(df)
-
-    return model
 
 
 def _get_scores(gtruth: Dict[str, Any], preds: Dict[str, Any], avg=True):

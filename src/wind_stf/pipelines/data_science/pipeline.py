@@ -35,10 +35,10 @@ Delete this when you start working on your own Kedro project.
 from kedro.pipeline import Pipeline, node
 
 from .nodes import (
-    split_modinfer_test,
+    define_inference_test_splits,
     define_cvsplits,
     scale,
-    cv_train,
+    train,
     evaluate,
     report_scores,
 )
@@ -48,15 +48,17 @@ def create_pipeline(**kwargs):
     return Pipeline(
         {
             node(
-                func=split_modinfer_test,
-                name=r'Split Inference-Test',
-                inputs=['capacity_factors_daily_2000to2015', 'params:modeling'],
-                outputs=['df_infer', 'df_test'],
+                func=define_inference_test_splits,
+                name=r'Define Inference-Test Splits',
+                inputs=['params:modeling'],
+                outputs='inference_test_splits_positions',
             ),
             node(
                 func=scale,
                 name=r'Scale',
-                inputs=['df_infer', 'params:modeling'],
+                inputs=['capacity_factors_daily_2000to2015',
+                        'params:modeling',
+                        'inference_test_splits_positions'],
                 outputs=['df_infer_scaled', 'scaler'],
             ),
             # node(
@@ -66,23 +68,24 @@ def create_pipeline(**kwargs):
             #     outputs='cv_splits_positions',
             # ),
             node(
-                func=cv_train,
-                name=r'CV Train',
+                func=train,
+                name=r'Train',
                 inputs=['df_infer_scaled',
-                        'params:modeling'],
-                        # 'cv_splits_positions'],
+                        'params:modeling',
+                        # 'params:cv',
+                        ],
                 outputs='model',
             ),
-            node(
-                func=evaluate,
-                name=r'Evaluate',
-                inputs=['model',
-                        'cv_splits_positions',
-                        'df_infer',
-                        'df_test',
-                        'scaler'],
-                outputs=['scores_nodewise', 'scores_averaged'],
-            ),
+            # node(
+            #     func=evaluate,
+            #     name=r'Evaluate',
+            #     inputs=['model',
+            #             'cv_splits_positions',
+            #             'df_infer',
+            #             'df_test',
+            #             'scaler'],
+            #     outputs=['scores_nodewise', 'scores_averaged'],
+            # ),
             # node(
             #     func=update_scoreboard,
             #     name=r'Report Scores',

@@ -133,33 +133,39 @@ capacity_factors_daily_2000to2015:
   key: df
   layer: Feature
 
-df_test:
-  type: pandas.HDFDataSet
-  filepath: data/05_model_input/df_test.hdf
-  key: df_test
-  layer: Reporting
+#df_test:
+#  type: pandas.HDFDataSet
+#  filepath: data/05_model_input/df_test.hdf
+#  key: df_test
+#  layer: Reporting
+#
+#df_infer:
+#  type: pandas.HDFDataSet
+#  filepath: data/05_model_input/df_infer.hdf
+#  key: df_infer
+#  layer: Model Input
+#
+#df_infer_scaled:
+#  type: pandas.HDFDataSet
+#  filepath: data/05_model_input/df_infer_scaled.hdf
+#  key: df_infer_scaled
+#  layer: Model Input
 
-df_infer:
-  type: pandas.HDFDataSet
-  filepath: data/05_model_input/df_infer.hdf
-  key: df_infer
-  layer: Model Input
-
-df_infer_scaled:
-  type: pandas.HDFDataSet
-  filepath: data/05_model_input/df_infer_scaled.hdf
-  key: df_infer_scaled
-  layer: Model Input
-
-scaler:
+inference_test_splits_positions:
   type: pickle.PickleDataSet
-  filepath: data/05_model_input/scaler.pkl
+  filepath: data/05_model_input/inference_test_splits_positions.pkl
   versioned: true
   layer: Model Input
 
 cv_splits_positions:
   type: pickle.PickleDataSet
   filepath: data/05_model_input/cv_splits_positions.pkl
+  versioned: true
+  layer: Model Input
+
+scaler:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/scaler.pkl
   versioned: true
   layer: Model Input
 
