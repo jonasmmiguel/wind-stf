@@ -161,7 +161,7 @@ class Scaler(Pipeline):
         for _, _, transform in reverse_iter:
             Xt = transform.inverse_transform(Xt)
 
-        if self.columns != []:
+        if len(self.columns) != 0:
             Xt = pd.DataFrame(data=Xt, index=X.index, columns=self.columns)
 
         return Xt

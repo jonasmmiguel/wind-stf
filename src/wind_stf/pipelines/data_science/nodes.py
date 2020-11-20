@@ -34,12 +34,16 @@ Delete this when you start working on your own Kedro project.
 # pylint: disable=invalid-name
 
 from typing import Any, Dict, List, Tuple
+import logging
+
+logging.basicConfig(filename='ds_nodes.log', level=logging.DEBUG)
+
 
 import numpy as np
 import pandas as pd
 import random
 
-from src.utils.preprocessing import registered_transformers, make_pipeline
+from src.utils.preprocessing import registered_transformers, make_pipeline, Scaler
 from src.utils.metrics import metrics_registered
 from learning_algs.modeling import ForecastingModel
 
@@ -107,8 +111,8 @@ def _load_model():
 
 def scale(df: pd.DataFrame,
           modeling: Dict[str, Any],
-          inference_test_splits_positions: Dict[int, Dict[str, Any]]) \
-        -> List[Dict]:
+          inference_test_splits_positions: Dict[int, Dict[str, Any]]
+          ) -> List[Dict]:
     '''
 
     :param df:
@@ -170,7 +174,6 @@ def define_inference_test_splits(modeling: Dict[str, Any]) -> Dict[int, Dict[str
             'infer': model_inference_window,
             'test': test_window
         }
-
     return inference_test_splits_positions
 
 
@@ -189,34 +192,6 @@ def split_modinfer_test(df: pd.DataFrame, modeling: dict) -> Tuple[Any, Any]:
     )
 
     return df[infer], df[test]
-
-
-def train(df_infer_scaled: pd.DataFrame,
-          modeling: Dict[str, Any],
-          # cv: Dict[str, Any]
-          ) -> Dict[int, Dict[str, Any]]:
-    # TODO: reduce memory usage. Probably too high.
-    # TODO: enable training for every CV-split.
-    model = {}
-
-    for infer_test_split in range( modeling['n_splits'] ):
-        df = df_infer_scaled[infer_test_split]
-
-        # ignore all vars we don't want to model
-        targets = modeling['targets']
-        df = df[targets]
-
-        model[infer_test_split] = {}
-        # if cv:
-        #     # train for every cv (train-val) split
-        #     for cv_split in train_val_splits_positions.keys():
-        #         df_train = df[train_val_splits_positions[cv_split]['train']]
-        #         model[infer_test_split][cv_split] = ForecastingModel(modeling).fit(df_train)
-
-        # train model on whole inference dataset
-        model[infer_test_split]['df_infer_scaled'] = ForecastingModel(modeling).fit(df)
-
-    return model
 
 
 def define_cvsplits(cv_params: Dict[str, Any], df_infer: pd.DataFrame) -> Dict[str, Any]:  # Dict[str, List[pd.date_range, List[str]]]:
@@ -270,7 +245,36 @@ def define_cvsplits(cv_params: Dict[str, Any], df_infer: pd.DataFrame) -> Dict[s
         raise NotImplementedError(f'CV method not recognized: {cv_method}')
 
 
-def _get_scores(gtruth: Dict[str, Any], preds: Dict[str, Any], avg=True):
+def train(df_infer_scaled: pd.DataFrame,
+          modeling: Dict[str, Any],
+          # cv: Dict[str, Any]
+          ) -> Dict[int, Dict[str, Any]]:
+    # TODO: reduce memory usage. Probably too high.
+    # TODO: enable training for every CV-split.
+    model = {}
+
+    for infer_test_split in range( modeling['n_splits'] ):
+        df = df_infer_scaled[infer_test_split]
+
+        # ignore all vars we don't want to model
+        targets = modeling['targets']
+        df = df[targets]
+
+        # model[infer_test_split] = {}
+        # if cv:
+        #     # train for every cv (train-val) split
+        #     for cv_split in train_val_splits_positions.keys():
+        #         df_train = df[train_val_splits_positions[cv_split]['train']]
+        #         model[infer_test_split][cv_split] = ForecastingModel(modeling).fit(df_train)
+
+        # train model on whole inference dataset
+        # model[infer_test_split]['df_infer_scaled'] = ForecastingModel(modeling).fit(df)
+        model[infer_test_split] = ForecastingModel(modeling).fit(df)
+
+    return model
+
+
+def _get_scores_cv(gtruth: Dict[str, Any], preds: Dict[str, Any], avg=True):
     all_metrics = list( metrics_registered.keys() )
     all_passes = preds.keys()
 
@@ -299,15 +303,7 @@ def _get_scores(gtruth: Dict[str, Any], preds: Dict[str, Any], avg=True):
     return scores
 
 
-def evaluate(model: Any, cv_splits_positions: Dict[str, Any], df_infer: pd.DataFrame, df_test: pd.DataFrame, scaler: Any) -> Any:
-    gtruth, preds = _get_predictions_e_gtruth(model, cv_splits_positions, df_infer, df_test, scaler)
-    scores_nodewise = _get_scores(gtruth, preds, avg=False)
-    scores_averaged = _get_scores(gtruth, preds, avg=True)
-
-    return scores_nodewise, scores_averaged
-
-
-def _get_predictions_e_gtruth(model, cv_splits_positions, df_infer, df_test, scaler):
+def _get_predictions_e_gtruth_cv(model, cv_splits_positions, df_infer, df_test, scaler):
     gtruth = {}
     preds = {}
     targets = model['full'].modeling['targets']
@@ -342,6 +338,93 @@ def _get_predictions_e_gtruth(model, cv_splits_positions, df_infer, df_test, sca
 
     return gtruth, preds
 
+
+def evaluate_cv(
+        model: Any,
+        cv_splits_positions: Dict[str, Any],
+        df_infer: pd.DataFrame,
+        df_test: pd.DataFrame,
+        scaler: Any) -> Any:
+
+    gtruth, preds = _get_predictions_e_gtruth_cv(model, cv_splits_positions, df_infer, df_test, scaler)
+    scores_nodewise = _get_scores_cv(gtruth, preds, avg=False)
+    scores_averaged = _get_scores_cv(gtruth, preds, avg=True)
+
+    return scores_nodewise, scores_averaged
+
+
+def _get_predictions_e_gtruth(
+        model: Dict[int, ForecastingModel],
+        df_unscaled: Dict[int, pd.DataFrame],
+        inference_test_splits_positions: Dict[int, Dict[str, Any]],
+        scaler: Dict[int, Scaler]) -> Tuple[Dict[int, Dict[str, pd.Series]], ...]:
+
+    gtruth = {}
+    preds = {}
+
+    targets = model[0].targets
+
+    for split in inference_test_splits_positions.keys():
+        gtruth[split] = {}
+        preds[split] = {}
+        split_slices = inference_test_splits_positions[split]
+
+        for cat in ['infer', 'test']:
+            gtruth[split][cat] = df_unscaled[split_slices[cat]][targets]
+            preds[split][cat] = model[split].predict(start=gtruth[split][cat].index[0],
+                                                     end=gtruth[split][cat].index[-1],
+                                                     scaler=scaler[split])
+
+    return gtruth, preds
+
+
+def _get_scores(
+        gtruth: Dict[int, Dict[str, pd.Series]],
+        preds: Dict[int, Dict[str, pd.Series]],
+        metrics: List[str],
+        avg: bool = True) -> pd.DataFrame:
+
+    all_metrics = [metrics_registered[m] for m in metrics]
+    all_splits = list( preds.keys() )
+
+    if avg:
+        multioutput = 'uniform_average'
+    else:
+        multioutput = 'raw_values'
+
+    scores = pd.DataFrame(
+        data=None,
+        index=pd.MultiIndex.from_product([all_metrics, ['infer', 'test']]),
+        columns=all_splits
+    )
+
+    for split in all_splits:
+        for cat in ['infer', 'test']:
+            for metric in all_metrics:
+                try:
+                    scores.loc[(metric, cat), split] = metrics_registered[metric](
+                        gtruth[split][cat],
+                        preds[split][cat],
+                        multioutput=multioutput
+                    )
+                except Exception as e:
+                    logging.debug(f'Exception: {e}')
+
+    return scores
+
+
+def evaluate(
+        model: Any,
+        df_unscaled: Dict[int, pd.DataFrame],
+        inference_test_splits_positions: Dict[int, Dict[str, Any]],
+        metrics: List[str],
+        scaler: Any) -> Any:
+
+    gtruth, preds = _get_predictions_e_gtruth(model, df_unscaled, inference_test_splits_positions, scaler)
+    scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
+    scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
+
+    return scores_nodewise, scores_averaged
 
 
 def _convert_CFtokW():

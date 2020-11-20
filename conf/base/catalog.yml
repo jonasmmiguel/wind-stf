@@ -151,6 +151,12 @@ capacity_factors_daily_2000to2015:
 #  key: df_infer_scaled
 #  layer: Model Input
 
+df_infer_scaled:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/df_infer_scaled.pkl
+  versioned: false
+  layer: Model Input
+
 inference_test_splits_positions:
   type: pickle.PickleDataSet
   filepath: data/05_model_input/inference_test_splits_positions.pkl

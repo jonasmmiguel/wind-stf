@@ -7,16 +7,15 @@ class ExponentialSmoothingRNN(object):
     ...
 
 
-class VectorExponentialSmoothing(ExponentialSmoothing):
+class VectorExponentialSmoothing(object):
     def __init__(self, modeling: Dict[str, Any]):
-        self.targets = modeling['targets']
+        self.freq = modeling['temporal_resolution']
         self.hyperpars = modeling['hyperpars']
+        self.targets = modeling['targets']
         self.model = {}
-        self.freq = 'D'
 
     def fit(self, y):
         self.model = {col: ExponentialSmoothing(y[col], **self.hyperpars).fit() for col in y}
-        self.targets = y.columns
         self.freq = y.index.freq
         return self
 

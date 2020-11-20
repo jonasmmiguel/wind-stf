@@ -11,6 +11,8 @@ class ForecastingModel:
         self.approach = modeling['approach']
         self.model = None
 
+        self.targets = modeling['targets']
+
     def fit(self, df):
         if self.approach == 'HW-ES':
             self.model = MultioutputExponentialSmoothing(self.modeling).fit(df)
