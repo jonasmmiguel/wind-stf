@@ -407,30 +407,30 @@ def _get_scores(
         metrics: List[str],
         avg: bool = True) -> pd.DataFrame:
 
-    all_metrics_basic =    [metrics_registered_basic[m] for m in metrics
-                            if m in metrics_registered_basic.keys()]
-    all_metrics_relative = [metrics_registered_naivebased[m] for m in metrics
-                            if m in metrics_registered_naivebased.keys()]
+    metrics_basic =    [metrics_registered_basic[m] for m in metrics
+                        if m in metrics_registered_basic.keys()]
+    metrics_relative = [metrics_registered_naivebased[m] for m in metrics
+                        if m in metrics_registered_naivebased.keys()]
 
     all_splits = list( preds.keys() )
 
     scores = pd.DataFrame(
         data=None,
-        index=pd.MultiIndex.from_product([all_metrics_basic + all_metrics_relative, ['infer', 'test']]),
+        index=pd.MultiIndex.from_product([metrics_basic + metrics_relative, ['infer', 'test']]),
         columns=all_splits
     )
 
     for split in all_splits:
-        for metric in all_metrics_basic:
+        for metric in metrics_basic:
             for cat in ['infer', 'test']:
-                scores.loc[(metric, cat), split] = metrics_registered_basic[metric](
+                scores.loc[(metric, cat), split] = metric(
                     gtruth[split][cat],
                     preds[split][cat],
                     avg,
                 )
 
-        for metric in all_metrics_relative:
-            scores.loc[(metric, 'test'), split] = metrics_registered_naivebased[metric](
+        for metric in metrics_relative:
+            scores.loc[(metric, 'test'), split] = metric(
                 gtruth[split]['test'],
                 preds[split]['test'],
                 gtruth[split]['infer'],

@@ -1,4 +1,4 @@
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error as mae
 from sklearn.utils.validation import check_consistent_length
 import pandas as pd
 import numpy as np
@@ -17,6 +17,13 @@ def root_mean_squared_error(y_true, y_pred, multioutput_avg):
         return mean_squared_error(y_true, y_pred, multioutput='raw_values') ** 0.5
 
 
+def mean_absolute_error(y_true, y_pred, multioutput_avg):
+    if multioutput_avg:
+        return mae(y_true, y_pred, multioutput='uniform_average')
+    else:
+        return mae(y_true, y_pred, multioutput='raw_values')
+
+
 def mean_absolute_percentage_error(y_true, y_pred, multioutput_avg, sample_weight=None):
     check_consistent_length(y_true, y_pred, sample_weight)
     epsilon = np.finfo(np.float64).eps
@@ -31,16 +38,16 @@ def mean_absolute_percentage_error(y_true, y_pred, multioutput_avg, sample_weigh
 def median_relative_absolute_error(y_true,
                                    y_pred,
                                    df_infer_unscaled,
-                                   multioutput='uniform_average',
+                                   multioutput_avg,
                                    ):
     error = y_pred - y_true
     error_naive = _get_error_naive(y_true, df_infer_unscaled)
 
     mdrae = np.median(np.abs(error / error_naive))
 
-    if multioutput == 'raw_values':
+    if not multioutput_avg:
         return mdrae
-    elif multioutput == 'uniform_average':
+    else:
         return np.average(mdrae, weights=None)
 
 
