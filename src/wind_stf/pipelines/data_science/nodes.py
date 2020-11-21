@@ -45,6 +45,7 @@ import random
 
 from src.utils.preprocessing import registered_transformers, make_pipeline, Scaler
 from src.utils.metrics import metrics_registered
+from src.utils.visualization import plot_gtruth_preds
 from learning_algs.modeling import ForecastingModel
 
 
@@ -128,21 +129,26 @@ def scale(df: pd.DataFrame,
     df_infer_scaled = {}
     scaler = {}
     for split in inference_test_splits_positions.keys():
+        # TODO: split in a previous, separate pipeline node
         df_infer = df[ inference_test_splits_positions[split]['infer'] ]
 
-        # instantiate pipeline with steps defined in preprocessing params
-        scaler[split] = make_pipeline(
-            *[registered_transformers[step] for step in preprocessing]
-        )
+        if preprocessing:
+            # instantiate pipeline with steps defined in preprocessing params
+            scaler[split] = make_pipeline(
+                *[registered_transformers[step] for step in preprocessing]
+            )
 
-        scaler[split] = scaler[split].fit( df_infer )
+            scaler[split] = scaler[split].fit( df_infer )
 
-        # transformation output is a numpy array
-        df_infer_scaled[split] = pd.DataFrame(
-            data=scaler[split].transform(df_infer),
-            index=df_infer.index,
-            columns=df_infer.columns,
-        )
+            # transformation output is a numpy array
+            df_infer_scaled[split] = pd.DataFrame(
+                data=scaler[split].transform(df_infer),
+                index=df_infer.index,
+                columns=df_infer.columns,
+            )
+        else:
+            scaler[split] = None
+            df_infer_scaled[split] = df_infer
 
     return [df_infer_scaled, scaler]
 
@@ -433,10 +439,13 @@ def evaluate(
         df_unscaled: Dict[int, pd.DataFrame],
         inference_test_splits_positions: Dict[int, Dict[str, Any]],
         metrics: List[str],
-        scaler: Any) -> Any:
+        scaler: Any,
+        display_gtruth_vs_pred: bool = True,
+) -> Any:
 
     gtruth, preds = _get_predictions_e_gtruth(model, df_unscaled, inference_test_splits_positions, scaler)
-    # plot_gtruth_preds(gtruth, preds)
+    if display_gtruth_vs_pred:
+        plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
     scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
 

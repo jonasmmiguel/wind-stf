@@ -60,7 +60,7 @@ def plot_gtruth_preds(gtruth: Dict[int, Dict[str, pd.Series]],
 
 
 if __name__ == '__main__':
-    with open(r'../data/06_models/model.pkl/2020-11-20T23.14.57.557Z/model.pkl',
+    with open(r'../data/06_models/model.pkl/2020-11-21T14.39.37.229Z/model.pkl',
               'rb') as f:
         model = pickle.load(f)
 
@@ -69,11 +69,11 @@ if __name__ == '__main__':
         key='df'
     )
 
-    with open(r'../data/05_model_input/inference_test_splits_positions.pkl/2020-11-20T23.10.52.665Z/inference_test_splits_positions.pkl',
+    with open(r'../data/05_model_input/inference_test_splits_positions.pkl/2020-11-21T14.32.58.477Z/inference_test_splits_positions.pkl',
               'rb') as f:
         inference_test_splits_positions = pickle.load(f)
 
-    with open(r'../data/05_model_input/scaler.pkl/2020-11-20T23.14.49.566Z/scaler.pkl',
+    with open(r'../data/05_model_input/scaler.pkl/2020-11-21T14.32.58.477Z/scaler.pkl',
               'rb') as f:
         scaler = pickle.load(f)
 
@@ -91,7 +91,10 @@ if __name__ == '__main__':
     forecasts = model.predict(
         start=gtruth[0]['test'].index[0],
         end=gtruth[0]['test'].index[-1],
-                  )
+    )
 
     print(forecasts)
+
+    print(gtruth[0]['infer'])
     print('done!')
+
