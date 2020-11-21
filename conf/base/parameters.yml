@@ -25,8 +25,11 @@ modeling:
       seasonal: multiplicative
       seasonal_periods: 7
   targets:
-      - DEF0C
-      - DEF0B
+    - DEF0C
+    - DEF07
+    - DEF0B
+    - DEF05
+    - DEF0E
 
 
 evaluation:
