@@ -149,7 +149,7 @@ def scale(df: pd.DataFrame,
 
 def define_inference_test_splits(modeling: Dict[str, Any]) -> Dict[int, Dict[str, Any]]:
     freq = modeling['temporal_resolution']
-    gap = pd.to_timedelta(modeling['gap'], freq)
+    gap = pd.to_timedelta(modeling['gap'] + 1, freq)  # +1 to ensure nonoverlapping infer-test slices
     forecast_horizon = pd.to_timedelta(modeling['forecast_horizon'], freq)
     modinfer_window_start = modeling['model_inference_horizon']['start']
     modinfer_window_end_earliest = modeling['model_inference_horizon']['end']['earliest_allowed']
@@ -355,7 +355,7 @@ def evaluate_cv(
 
 def _get_predictions_e_gtruth(
         model: Dict[int, ForecastingModel],
-        df_unscaled: Dict[int, pd.DataFrame],
+        df_unscaled: pd.DataFrame,
         inference_test_splits_positions: Dict[int, Dict[str, Any]],
         scaler: Dict[int, Scaler]) -> Tuple[Dict[int, Dict[str, pd.Series]], ...]:
 
@@ -421,6 +421,7 @@ def evaluate(
         scaler: Any) -> Any:
 
     gtruth, preds = _get_predictions_e_gtruth(model, df_unscaled, inference_test_splits_positions, scaler)
+    # plot_gtruth_preds(gtruth, preds)
     scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
 
