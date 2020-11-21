@@ -7,7 +7,7 @@ cv:  None
 
 
 modeling:
-  approach: HW-ES                             # Historical Median
+  approach: NaiveForwardFill
   temporal_resolution: D                      # daily resolution
   model_inference_horizon:
     start: 2013-01-01

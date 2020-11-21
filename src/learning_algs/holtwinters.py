@@ -19,7 +19,7 @@ class VectorExponentialSmoothing(object):
         self.freq = y.index.freq
         return self
 
-    def predict(self, start, end, scaler=None):
+    def predict(self, start, end) -> pd.DataFrame:
         forecasts_timestamps = pd.date_range(start=start, end=end, freq=self.freq)
         forecasts = {col: self.model[col].predict(start, end) for col in self.targets}
 
@@ -28,12 +28,7 @@ class VectorExponentialSmoothing(object):
             index=forecasts_timestamps,
             )
 
-        df_pred_unscaled = df_pred
-        if scaler:
-            df_pred_unscaled = scaler.inverse_transform(df_pred)
-
-        return df_pred_unscaled
-
+        return df_pred
 
 
 
