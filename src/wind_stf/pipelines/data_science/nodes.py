@@ -45,7 +45,7 @@ import random
 
 from src.utils.preprocessing import registered_transformers, make_pipeline, Scaler
 from src.utils.metrics import metrics_registered
-from src.utils.visualization import plot_gtruth_preds
+from src.utils.visualization import _plot_gtruth_preds, _plot_error_boxplots
 from learning_algs.modeling import ForecastingModel
 
 
@@ -164,6 +164,7 @@ def define_inference_test_splits(modeling: Dict[str, Any],
     modinfer_window_end_earliest = modeling['model_inference_horizon']['end']['earliest_allowed']
     modinfer_window_end_latest = modeling['model_inference_horizon']['end']['latest_allowed']
     n_splits = modeling['n_splits']
+    random.seed(2020)
 
     available_window = pd.date_range(start=modinfer_window_end_earliest,
                                      end=modinfer_window_end_latest - gap - forecast_horizon,
@@ -423,14 +424,21 @@ def _get_scores(
     for split in all_splits:
         for cat in ['infer', 'test']:
             for metric in all_metrics:
-                try:
+                if metric not in ['MdRAE']:
+                    try:
+                        scores.loc[(metric, cat), split] = metrics_registered[metric](
+                            gtruth[split][cat],
+                            preds[split][cat],
+                            multioutput=multioutput
+                        )
+                    except Exception as e:
+                        logging.debug(f'Exception: {e}')
+                else:
                     scores.loc[(metric, cat), split] = metrics_registered[metric](
                         gtruth[split][cat],
                         preds[split][cat],
                         multioutput=multioutput
                     )
-                except Exception as e:
-                    logging.debug(f'Exception: {e}')
 
     return scores
 
@@ -442,11 +450,18 @@ def evaluate(
         metrics: List[str],
         scaler: Any,
         display_gtruth_vs_pred: bool = True,
+        display_error_boxplots: bool = True,
 ) -> Any:
 
     gtruth, preds = _get_predictions_e_gtruth(model, df_unscaled, inference_test_splits_positions, scaler)
     if display_gtruth_vs_pred:
-        plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
+        _plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
+
+    if display_error_boxplots:
+        _plot_error_boxplots(gtruth,
+                             preds,
+                             nodes=['DEF0C', 'DEF07', 'DEF0B', 'DEF05', 'DEF0E'],
+                             split=5)
     scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
 

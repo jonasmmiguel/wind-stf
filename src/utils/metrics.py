@@ -24,9 +24,19 @@ def mean_absolute_percentage_error(y_true, y_pred,
     return np.average(output_errors, weights=multioutput)
 
 
+def median_relative_absolute_error(y_true,
+                                   y_pred,
+                                   ):
+    error = y_pred - y_true
+    error_naive = 1.0
+    return np.median(np.abs(error / error_naive))
+
+
 metrics_registered = {
     'MAE': mean_absolute_error,
     'RMSE': root_mean_squared_error,
-    'MAPE': mean_absolute_percentage_error
+    'MAPE': mean_absolute_percentage_error,
+    'MdRAE': median_relative_absolute_error,
 }
+
 

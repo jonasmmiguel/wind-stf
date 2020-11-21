@@ -34,5 +34,6 @@ evaluation:
   - MAE
   - RMSE
   - MAPE
+  - MdRAE
 
 

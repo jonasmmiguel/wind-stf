@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 import pandas as pd
 import plotly.graph_objects as go
 from matplotlib.colors import to_rgba
@@ -8,10 +8,10 @@ def set_rgba_color(css_code: str = 'MidnightBlue', alpha: float = 0.8) -> str:
     return 'rgba' + str(to_rgba(css_code, alpha=alpha))
 
 
-def plot_gtruth_preds(gtruth: Dict[int, Dict[str, pd.Series]],
-                      preds: Dict[int, Dict[str, pd.Series]],
-                      node: str = 'DEF0C',
-                      split: int = 0):
+def _plot_gtruth_preds(gtruth: Dict[int, Dict[str, pd.Series]],
+                       preds: Dict[int, Dict[str, pd.Series]],
+                       node: str = 'DEF0C',
+                       split: int = 0):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=pd.concat((gtruth[split]['infer'][node], gtruth[split]['test'][node])).index,
                              y=pd.concat((gtruth[split]['infer'][node], gtruth[split]['test'][node])).values,
@@ -54,3 +54,29 @@ def plot_gtruth_preds(gtruth: Dict[int, Dict[str, pd.Series]],
     fig.show()
 
     return
+
+
+def _plot_error_boxplots(gtruth: Dict[int, Dict[str, pd.Series]],
+                         preds: Dict[int, Dict[str, pd.Series]],
+                         nodes: List[str],
+                         split: int = 6):
+    fig = go.Figure()
+    error = preds[split]['test'] - gtruth[split]['test']
+    for n in nodes:
+        fig.add_trace(go.Box(y=error[n],
+                             name=n,
+                             boxpoints='all',
+                             )
+                      )
+
+    # Configure layout
+    fig.update_layout(
+        template='ggplot2',
+    )
+
+    fig.show()
+
+    # Configure axes
+    fig.update_xaxes(title_text=r'$district$')
+    fig.update_yaxes(title_text=r'$e = \hat{y} - y$')
+
