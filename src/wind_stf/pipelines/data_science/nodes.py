@@ -157,7 +157,8 @@ def define_inference_test_splits(modeling: Dict[str, Any],
                                  stratify: bool = True
                                  ) -> Dict[int, Dict[str, Any]]:
     freq = modeling['temporal_resolution']
-    gap = pd.to_timedelta(modeling['gap'] + 1, freq)  # +1 to ensure nonoverlapping infer-test slices
+    gap = pd.to_timedelta(modeling['gap'], freq)  # +1 to ensure nonoverlapping infer-test slices
+    unit_delta = pd.to_timedelta(1, freq)  # +1 to ensure nonoverlapping infer-test slices
     forecast_horizon = pd.to_timedelta(modeling['forecast_horizon'], freq)
     modinfer_window_start = modeling['model_inference_horizon']['start']
     modinfer_window_end_earliest = modeling['model_inference_horizon']['end']['earliest_allowed']
@@ -165,8 +166,8 @@ def define_inference_test_splits(modeling: Dict[str, Any],
     n_splits = modeling['n_splits']
 
     available_window = pd.date_range(start=modinfer_window_end_earliest,
-                                    end=modinfer_window_end_latest - gap - forecast_horizon,
-                                    freq=freq)
+                                     end=modinfer_window_end_latest - gap - forecast_horizon,
+                                     freq=freq)
 
     w = int(np.floor(len(available_window) / n_splits))  # strata width
 
@@ -188,7 +189,7 @@ def define_inference_test_splits(modeling: Dict[str, Any],
         model_inference_window = slice(modinfer_window_start,
                                        modinfer_window_end)
 
-        test_window = slice(modinfer_window_end + gap,
+        test_window = slice(modinfer_window_end + gap + unit_delta,
                             modinfer_window_end + gap + forecast_horizon)
 
         inference_test_splits_positions[k] = {

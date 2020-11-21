@@ -32,7 +32,7 @@ def plot_gtruth_preds(gtruth: Dict[int, Dict[str, pd.Series]],
                              y=preds[split]['test'][node].values,
                              mode='lines',
                              name='preds test',
-                             line={'color': set_rgba_color('#ff6600', 0.8)}
+                             line={'color': set_rgba_color('#ff6600', 0.5)}
                              )
                   )
 

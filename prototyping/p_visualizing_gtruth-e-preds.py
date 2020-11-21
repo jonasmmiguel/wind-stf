@@ -69,7 +69,7 @@ if __name__ == '__main__':
         key='df'
     )
 
-    with open(r'../data/05_model_input/inference_test_splits_positions.pkl/2020-11-21T14.32.58.477Z/inference_test_splits_positions.pkl',
+    with open(r'../data/05_model_input/inference_test_splits_positions.pkl/2020-11-21T20.12.11.359Z/inference_test_splits_positions.pkl',
               'rb') as f:
         inference_test_splits_positions = pickle.load(f)
 
@@ -89,12 +89,16 @@ if __name__ == '__main__':
     model = NaiveForwardFill().fit(gtruth[0]['infer'])
 
     forecasts = model.predict(
-        start=gtruth[0]['test'].index[0],
-        end=gtruth[0]['test'].index[-1],
+        start=gtruth[4]['test'].index[0],
+        end=gtruth[4]['test'].index[-1],
     )
 
+    print(gtruth[4]['infer'])
     print(forecasts)
 
-    print(gtruth[0]['infer'])
+
+
+    # print(inference_test_splits_positions[0]['infer'])
+    # print(inference_test_splits_positions[0]['test'])
     print('done!')
 
