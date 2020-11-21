@@ -407,14 +407,12 @@ def _get_scores(
         metrics: List[str],
         avg: bool = True) -> pd.DataFrame:
 
-    all_metrics_basic =    [metrics_registered_basic[m] for m in metrics]
-    all_metrics_relative = [metrics_registered_naivebased[m] for m in metrics]
-    all_splits = list( preds.keys() )
+    all_metrics_basic =    [metrics_registered_basic[m] for m in metrics
+                            if m in metrics_registered_basic.keys()]
+    all_metrics_relative = [metrics_registered_naivebased[m] for m in metrics
+                            if m in metrics_registered_naivebased.keys()]
 
-    if avg:
-        multioutput = 'uniform_average'
-    else:
-        multioutput = 'raw_values'
+    all_splits = list( preds.keys() )
 
     scores = pd.DataFrame(
         data=None,
@@ -428,7 +426,7 @@ def _get_scores(
                 scores.loc[(metric, cat), split] = metrics_registered_basic[metric](
                     gtruth[split][cat],
                     preds[split][cat],
-                    multioutput=multioutput
+                    avg,
                 )
 
         for metric in all_metrics_relative:
@@ -436,7 +434,7 @@ def _get_scores(
                 gtruth[split]['test'],
                 preds[split]['test'],
                 gtruth[split]['infer'],
-                multioutput=multioutput
+                avg,
             )
 
             scores.loc[(metric, 'infer'), split] = np.nan
@@ -450,8 +448,8 @@ def evaluate(
         inference_test_splits_positions: Dict[int, Dict[str, Any]],
         metrics: List[str],
         scaler: Any,
-        display_gtruth_vs_pred: bool = True,
-        display_error_boxplots: bool = True,
+        display_gtruth_vs_pred: bool = False,
+        display_error_boxplots: bool = False,
 ) -> Any:
 
     gtruth, preds = _get_predictions_e_gtruth(model, df_unscaled, inference_test_splits_positions, scaler)

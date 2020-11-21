@@ -10,22 +10,22 @@ def _get_error_naive(y_true, df_infer_unscaled):
     return y_pred - y_true
 
 
-def root_mean_squared_error(y_true, y_pred, multioutput='uniform_average'):
-    return mean_squared_error(y_true, y_pred, multioutput=multioutput) ** 0.5
+def root_mean_squared_error(y_true, y_pred, multioutput_avg):
+    if multioutput_avg:
+        return mean_squared_error(y_true, y_pred, multioutput='uniform_average') ** 0.5
+    else:
+        return mean_squared_error(y_true, y_pred, multioutput='raw_values') ** 0.5
 
 
-def mean_absolute_percentage_error(y_true, y_pred,
-                                   sample_weight=None,
-                                   multioutput='uniform_average'):
+def mean_absolute_percentage_error(y_true, y_pred, multioutput_avg, sample_weight=None):
     check_consistent_length(y_true, y_pred, sample_weight)
     epsilon = np.finfo(np.float64).eps
     mape = 100 * np.abs(y_pred - y_true) / np.maximum(np.abs(y_true), epsilon)
     output_errors = np.average(mape, weights=sample_weight, axis=0)
-    if isinstance(multioutput, str):
-        if multioutput == 'raw_values':
-            return output_errors
-        elif multioutput == 'uniform_average':
-            return np.average(output_errors, weights=None)
+    if not multioutput_avg:
+        return output_errors
+    else:
+        return np.average(output_errors, weights=sample_weight)
 
 
 def median_relative_absolute_error(y_true,
