@@ -44,7 +44,7 @@ import pandas as pd
 import random
 
 from src.utils.preprocessing import registered_transformers, make_pipeline, Scaler
-from src.utils.metrics import metrics_registered
+from src.utils.metrics import metrics_registered_basic, metrics_registered_naivebased
 from src.utils.visualization import _plot_gtruth_preds, _plot_error_boxplots
 from learning_algs.modeling import ForecastingModel
 
@@ -378,7 +378,7 @@ def evaluate_cv(
 
 def _get_predictions_e_gtruth(
         model: Dict[int, ForecastingModel],
-        df_unscaled: pd.DataFrame,
+        df_unscaled: Dict[int, pd.DataFrame],
         inference_test_splits_positions: Dict[int, Dict[str, Any]],
         scaler: Dict[int, Scaler]) -> Tuple[Dict[int, Dict[str, pd.Series]], ...]:
 
@@ -407,7 +407,8 @@ def _get_scores(
         metrics: List[str],
         avg: bool = True) -> pd.DataFrame:
 
-    all_metrics = [metrics_registered[m] for m in metrics]
+    all_metrics_basic =    [metrics_registered_basic[m] for m in metrics]
+    all_metrics_relative = [metrics_registered_naivebased[m] for m in metrics]
     all_splits = list( preds.keys() )
 
     if avg:
@@ -417,28 +418,28 @@ def _get_scores(
 
     scores = pd.DataFrame(
         data=None,
-        index=pd.MultiIndex.from_product([all_metrics, ['infer', 'test']]),
+        index=pd.MultiIndex.from_product([all_metrics_basic + all_metrics_relative, ['infer', 'test']]),
         columns=all_splits
     )
 
     for split in all_splits:
-        for cat in ['infer', 'test']:
-            for metric in all_metrics:
-                if metric not in ['MdRAE']:
-                    try:
-                        scores.loc[(metric, cat), split] = metrics_registered[metric](
-                            gtruth[split][cat],
-                            preds[split][cat],
-                            multioutput=multioutput
-                        )
-                    except Exception as e:
-                        logging.debug(f'Exception: {e}')
-                else:
-                    scores.loc[(metric, cat), split] = metrics_registered[metric](
-                        gtruth[split][cat],
-                        preds[split][cat],
-                        multioutput=multioutput
-                    )
+        for metric in all_metrics_basic:
+            for cat in ['infer', 'test']:
+                scores.loc[(metric, cat), split] = metrics_registered_basic[metric](
+                    gtruth[split][cat],
+                    preds[split][cat],
+                    multioutput=multioutput
+                )
+
+        for metric in all_metrics_relative:
+            scores.loc[(metric, 'test'), split] = metrics_registered_naivebased[metric](
+                gtruth[split]['test'],
+                preds[split]['test'],
+                gtruth[split]['infer'],
+                multioutput=multioutput
+            )
+
+            scores.loc[(metric, 'infer'), split] = np.nan
 
     return scores
 

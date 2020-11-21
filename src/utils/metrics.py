@@ -1,6 +1,13 @@
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.utils.validation import check_consistent_length
+import pandas as pd
 import numpy as np
+
+
+def _get_error_naive(y_true, df_infer_unscaled):
+    y_pred = df_infer_unscaled.tail(1)
+    y_pred = np.tile(y_pred, reps=[len(y_true), 1])
+    return y_pred - y_true
 
 
 def root_mean_squared_error(y_true, y_pred, multioutput='uniform_average'):
@@ -18,24 +25,32 @@ def mean_absolute_percentage_error(y_true, y_pred,
         if multioutput == 'raw_values':
             return output_errors
         elif multioutput == 'uniform_average':
-            # pass None as weights to np.average: uniform mean
-            multioutput = None
-
-    return np.average(output_errors, weights=multioutput)
+            return np.average(output_errors, weights=None)
 
 
 def median_relative_absolute_error(y_true,
                                    y_pred,
+                                   df_infer_unscaled,
+                                   multioutput='uniform_average',
                                    ):
     error = y_pred - y_true
-    error_naive = 1.0
-    return np.median(np.abs(error / error_naive))
+    error_naive = _get_error_naive(y_true, df_infer_unscaled)
+
+    mdrae = np.median(np.abs(error / error_naive))
+
+    if multioutput == 'raw_values':
+        return mdrae
+    elif multioutput == 'uniform_average':
+        return np.average(mdrae, weights=None)
 
 
-metrics_registered = {
+metrics_registered_basic = {
     'MAE': mean_absolute_error,
     'RMSE': root_mean_squared_error,
     'MAPE': mean_absolute_percentage_error,
+}
+
+metrics_registered_naivebased = {
     'MdRAE': median_relative_absolute_error,
 }
 
