@@ -1,5 +1,6 @@
 import random
 import pandas as pd
+import numpy as np
 import yaml
 
 if __name__ == '__main__':
@@ -19,10 +20,19 @@ if __name__ == '__main__':
     modinfer_window_end_latest = pars['modeling']['model_inference_horizon']['end']['latest_allowed']
     n_splits = pars['modeling']['n_splits']
 
-    for i in range(n_splits):
+    available_window = pd.date_range(start=modinfer_window_end_earliest,
+                                    end=modinfer_window_end_latest - gap - forecast_horizon,
+                                    freq=freq)
+
+    w = int( np.floor( len(available_window) / n_splits ) )  # subwindow width
+
+    for k in range(n_splits):
+
+        print(f'SPLIT {k}: start: {available_window[k * w]} --- end: {available_window[(k+1) * w]}')
+
         modinfer_window_end = random.choice(
-            pd.date_range(start=modinfer_window_end_earliest,
-                          end=modinfer_window_end_latest - gap - forecast_horizon,
+            pd.date_range(start=available_window[k * w],
+                          end=available_window[(k+1) * w],
                           freq=freq)
         )
 
@@ -32,6 +42,6 @@ if __name__ == '__main__':
         test_window = slice(modinfer_window_end + gap,
                             modinfer_window_end + gap + forecast_horizon)
 
-        print(f'modinfer: {model_inference_window}, test: {test_window}')
+        print(f'modinfer end: {modinfer_window_end}')
 
 

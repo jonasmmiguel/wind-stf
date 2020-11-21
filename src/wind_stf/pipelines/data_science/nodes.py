@@ -147,7 +147,9 @@ def scale(df: pd.DataFrame,
     return [df_infer_scaled, scaler]
 
 
-def define_inference_test_splits(modeling: Dict[str, Any]) -> Dict[int, Dict[str, Any]]:
+def define_inference_test_splits(modeling: Dict[str, Any],
+                                 stratify: bool = True
+                                 ) -> Dict[int, Dict[str, Any]]:
     freq = modeling['temporal_resolution']
     gap = pd.to_timedelta(modeling['gap'] + 1, freq)  # +1 to ensure nonoverlapping infer-test slices
     forecast_horizon = pd.to_timedelta(modeling['forecast_horizon'], freq)
@@ -156,13 +158,26 @@ def define_inference_test_splits(modeling: Dict[str, Any]) -> Dict[int, Dict[str
     modinfer_window_end_latest = modeling['model_inference_horizon']['end']['latest_allowed']
     n_splits = modeling['n_splits']
 
+    available_window = pd.date_range(start=modinfer_window_end_earliest,
+                                    end=modinfer_window_end_latest - gap - forecast_horizon,
+                                    freq=freq)
+
+    w = int(np.floor(len(available_window) / n_splits))  # strata width
+
     inference_test_splits_positions = {}
-    for split in range(n_splits):
-        modinfer_window_end = random.choice(
-            pd.date_range(start=modinfer_window_end_earliest,
-                          end=modinfer_window_end_latest - gap - forecast_horizon,
-                          freq=freq)
-        )
+    for k in range(n_splits):
+        if not stratify:
+            modinfer_window_end = random.choice(
+                pd.date_range(start=available_window[0],
+                              end=available_window[-1],
+                              freq=freq)
+            )
+        else:
+            modinfer_window_end = random.choice(
+                pd.date_range(start=available_window[k * w],
+                              end=available_window[(k+1) * w],
+                              freq=freq)
+            )
 
         model_inference_window = slice(modinfer_window_start,
                                        modinfer_window_end)
@@ -170,7 +185,7 @@ def define_inference_test_splits(modeling: Dict[str, Any]) -> Dict[int, Dict[str
         test_window = slice(modinfer_window_end + gap,
                             modinfer_window_end + gap + forecast_horizon)
 
-        inference_test_splits_positions[split] = {
+        inference_test_splits_positions[k] = {
             'infer': model_inference_window,
             'test': test_window
         }
