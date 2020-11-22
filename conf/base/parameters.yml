@@ -10,7 +10,7 @@ modeling:
   approach: HW-ES
   temporal_resolution: D                      # daily resolution
   model_inference_horizon:
-    start: 2005-01-01
+    start: 2013-01-01
     end:                                      # a string, unless for research purposes
       earliest_allowed: 2015-01-01
       latest_allowed: 2015-12-31
@@ -18,6 +18,8 @@ modeling:
   gap: 0
   forecast_horizon: 7
   preprocessing:
+    - get_quantile_equivalent_normal_dist
+    - make_strictly_positive
   hyperpars:
       trend: additive
       seasonal: multiplicative

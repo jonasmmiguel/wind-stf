@@ -75,6 +75,13 @@ def _split_train_eval(df: pd.DataFrame, train_window, eval_window):
     }
 
 
+def _convert_capfactor_to_kw(
+        capfactor_preds: Dict[int, pd.DataFrame],
+        power_installed: pd.DataFrame,
+) -> Dict[int, pd.DataFrame]:
+    return {split: capfactor_preds[split] * power_installed for split in capfactor_preds.keys()}
+
+
 def build_spatiotemporal_dataset(
         df_spatial: pd.DataFrame,
         df_temporal: pd.DataFrame,
@@ -396,6 +403,35 @@ def _get_predictions_e_gtruth(
             preds[split][cat] = model[split].predict(start=gtruth[split][cat].index[0],
                                                      end=gtruth[split][cat].index[-1],
                                                      scaler=scaler[split])
+    return gtruth, preds
+
+
+def _get_predictions_e_gtruth_in_kW(
+        model: Dict[int, ForecastingModel],
+        df_unscaled: Dict[int, pd.DataFrame],
+        inference_test_splits_positions: Dict[int, Dict[str, Any]],
+        scaler: Dict[int, Scaler],
+        power_installed: pd.DataFrame,
+) -> Tuple[Dict[int, Dict[str, pd.Series]], ...]:
+
+    gtruth = {}
+    preds = {}
+
+    targets = model[0].targets
+    for split in inference_test_splits_positions.keys():
+        gtruth[split] = {}
+        preds[split] = {}
+        split_slices = inference_test_splits_positions[split]
+
+        for cat in ['infer', 'test']:
+            gtruth[split][cat] = df_unscaled[split_slices[cat]][targets] * power_installed
+            preds[split][cat] = model[split].predict(start=gtruth[split][cat].index[0],
+                                                     end=gtruth[split][cat].index[-1],
+                                                     scaler=scaler[split]) * power_installed
+
+            # Prevent NaN cols, rows arising from irrelevant parts of power_installed
+            gtruth[split][cat].dropna(how='all', axis=['rows', 'columns'], inplace=True)
+            preds[split][cat].dropna(how='all', axis=['rows', 'columns'], inplace=True)
 
     return gtruth, preds
 
@@ -446,6 +482,36 @@ def evaluate(
         ) -> Any:
 
     gtruth, preds = _get_predictions_e_gtruth(model, df_unscaled, inference_test_splits_positions, scaler)
+
+    scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
+    scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
+
+    print(scores_averaged)
+
+    if display:
+        _plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
+        _plot_error_boxplots(gtruth,
+                             preds,
+                             nodes=['DEF0C', 'DEF07', 'DEF0B', 'DEF05', 'DEF0E'],
+                             split=5)
+        # _plot_scores_table(scores_averaged)
+
+    return scores_nodewise, scores_averaged
+
+
+def evaluate_in_kW(
+        model: Any,
+        df_unscaled: Dict[int, pd.DataFrame],
+        inference_test_splits_positions: Dict[int, Dict[str, Any]],
+        metrics: List[str],
+        scaler: Any,
+        power_installed: pd.DataFrame,
+        display: bool = True,
+        ) -> Any:
+
+    gtruth, preds = _get_predictions_e_gtruth_in_kW(
+        model, df_unscaled, inference_test_splits_positions, scaler, power_installed
+    )
 
     scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)

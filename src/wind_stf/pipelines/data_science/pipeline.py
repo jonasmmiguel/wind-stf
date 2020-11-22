@@ -36,10 +36,10 @@ from kedro.pipeline import Pipeline, node
 
 from .nodes import (
     define_inference_test_splits,
-    define_cvsplits,
     scale,
     train,
     evaluate,
+    evaluate_in_kW,
     report_scores,
 )
 
@@ -86,6 +86,17 @@ def create_pipeline(**kwargs):
                         'scaler'],
                 outputs=['scores_nodewise', 'scores_averaged'],
             ),
+            # node(
+            #     func=evaluate_in_kW,
+            #     name=r'Evaluate in kW',
+            #     inputs=['model',
+            #             'capacity_factors_daily_2000to2015',
+            #             'inference_test_splits_positions',
+            #             'params:evaluation',
+            #             'scaler',
+            #             'power_installed'],
+            #     outputs=['scores_nodewise_kW', 'scores_averaged_kW'],
+            # ),
             # node(
             #     func=update_scoreboard,
             #     name=r'Report Scores',

@@ -34,9 +34,4 @@ class ForecastingModel:
         return self
 
     def predict(self, start, end, scaler: Scaler = None):
-        df_pred = self.model.predict(start, end)
-
-        if scaler:
-            return scaler.inverse_transform(df_pred)
-        else:
-            return df_pred
+        return self.model.predict(start, end, scaler)
