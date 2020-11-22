@@ -10,7 +10,7 @@ modeling:
   approach: HW-ES
   temporal_resolution: D                      # daily resolution
   model_inference_horizon:
-    start: 2005-01-01
+    start: 2013-01-01
     end:                                      # a string, unless for research purposes
       earliest_allowed: 2015-01-01
       latest_allowed: 2015-12-31

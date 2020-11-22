@@ -424,15 +424,12 @@ def _get_predictions_e_gtruth_in_kW(
         split_slices = inference_test_splits_positions[split]
 
         for cat in ['infer', 'test']:
-            gtruth[split][cat] = df_unscaled[split_slices[cat]][targets] * power_installed
-            preds[split][cat] = model[split].predict(start=gtruth[split][cat].index[0],
-                                                     end=gtruth[split][cat].index[-1],
-                                                     scaler=scaler[split]) * power_installed
+            df = df_unscaled[split_slices[cat]]
+            gtruth[split][cat] = df[targets] * power_installed.loc[df.index, targets]
 
-            # Prevent NaN cols, rows arising from irrelevant parts of power_installed
-            gtruth[split][cat].dropna(how='all', axis=['rows', 'columns'], inplace=True)
-            preds[split][cat].dropna(how='all', axis=['rows', 'columns'], inplace=True)
-
+            preds[split][cat] = model[split].predict(start=df.index[0],
+                                                     end=df.index[-1],
+                                                     scaler=scaler[split]) * power_installed.loc[df.index, targets]
     return gtruth, preds
 
 
