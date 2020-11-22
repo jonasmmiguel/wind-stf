@@ -484,7 +484,7 @@ def evaluate(
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
 
     scores_averaged['avg'] = scores_averaged.mean(axis='columns')
-    print(round(scores_averaged['avg'], 3))
+    print(round(scores_averaged, 3))
 
     if display:
         _plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
