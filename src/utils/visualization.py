@@ -59,7 +59,7 @@ def _plot_gtruth_preds(gtruth: Dict[int, Dict[str, pd.Series]],
 def _plot_error_boxplots(gtruth: Dict[int, Dict[str, pd.Series]],
                          preds: Dict[int, Dict[str, pd.Series]],
                          nodes: List[str],
-                         split: int = 6):
+                         split: int):
     fig = go.Figure()
     error = preds[split]['test'] - gtruth[split]['test']
     for n in nodes:
@@ -80,3 +80,6 @@ def _plot_error_boxplots(gtruth: Dict[int, Dict[str, pd.Series]],
     fig.update_xaxes(title_text=r'$district$')
     fig.update_yaxes(title_text=r'$e = \hat{y} - y$')
 
+
+def _plot_scores_table(scores: pd.DataFrame):
+    ...

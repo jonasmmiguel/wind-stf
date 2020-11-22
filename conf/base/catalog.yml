@@ -91,6 +91,14 @@ measurements_hourly_2008:
 
 measurements_hourly_2009:
   <<: *csv
+  filepath: data/01_raw/power-generation/wpinfeed_inkW_nuts3_2009_utc.csv
+
+measurements_hourly_2010:
+  <<: *csv
+  filepath: data/01_raw/power-generation/wpinfeed_inkW_nuts3_2010_utc.csv
+
+measurements_hourly_2011:
+  <<: *csv
   filepath: data/01_raw/power-generation/wpinfeed_inkW_nuts3_2011_utc.csv
 
 measurements_hourly_2012:

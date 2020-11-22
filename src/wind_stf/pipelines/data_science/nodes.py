@@ -41,11 +41,11 @@ logging.basicConfig(filename='ds_nodes.log', level=logging.DEBUG)
 
 import numpy as np
 import pandas as pd
-import random
+import random; random.seed(2020)
 
 from src.utils.preprocessing import registered_transformers, make_pipeline, Scaler
 from src.utils.metrics import metrics_registered_basic, metrics_registered_naivebased
-from src.utils.visualization import _plot_gtruth_preds, _plot_error_boxplots
+from src.utils.visualization import _plot_gtruth_preds, _plot_error_boxplots, _plot_scores_table
 from learning_algs.modeling import ForecastingModel
 
 
@@ -164,7 +164,6 @@ def define_inference_test_splits(modeling: Dict[str, Any],
     modinfer_window_end_earliest = modeling['model_inference_horizon']['end']['earliest_allowed']
     modinfer_window_end_latest = modeling['model_inference_horizon']['end']['latest_allowed']
     n_splits = modeling['n_splits']
-    random.seed(2020)
 
     available_window = pd.date_range(start=modinfer_window_end_earliest,
                                      end=modinfer_window_end_latest - gap - forecast_horizon,
@@ -407,37 +406,32 @@ def _get_scores(
         metrics: List[str],
         avg: bool = True) -> pd.DataFrame:
 
-    metrics_basic =    [metrics_registered_basic[m] for m in metrics
-                        if m in metrics_registered_basic.keys()]
-    metrics_relative = [metrics_registered_naivebased[m] for m in metrics
-                        if m in metrics_registered_naivebased.keys()]
-
-    all_splits = list( preds.keys() )
+    all_splits = list(preds.keys())
 
     scores = pd.DataFrame(
         data=None,
-        index=pd.MultiIndex.from_product([metrics_basic + metrics_relative, ['infer', 'test']]),
+        index=pd.MultiIndex.from_product([metrics, ['infer', 'test']]),
         columns=all_splits
     )
 
     for split in all_splits:
-        for metric in metrics_basic:
+        for metric_name, metric in metrics_registered_basic.items():
             for cat in ['infer', 'test']:
-                scores.loc[(metric, cat), split] = metric(
+                scores.loc[(metric_name, cat), split] = metric(
                     gtruth[split][cat],
                     preds[split][cat],
                     avg,
                 )
 
-        for metric in metrics_relative:
-            scores.loc[(metric, 'test'), split] = metric(
+        for metric_name, metric in metrics_registered_naivebased.items():
+            scores.loc[(metric_name, 'test'), split] = metric(
                 gtruth[split]['test'],
                 preds[split]['test'],
                 gtruth[split]['infer'],
                 avg,
             )
 
-            scores.loc[(metric, 'infer'), split] = np.nan
+            scores.loc[(metric_name, 'infer'), split] = np.nan
 
     return scores
 
@@ -448,21 +442,23 @@ def evaluate(
         inference_test_splits_positions: Dict[int, Dict[str, Any]],
         metrics: List[str],
         scaler: Any,
-        display_gtruth_vs_pred: bool = False,
-        display_error_boxplots: bool = False,
-) -> Any:
+        display: bool = False,
+        ) -> Any:
 
     gtruth, preds = _get_predictions_e_gtruth(model, df_unscaled, inference_test_splits_positions, scaler)
-    if display_gtruth_vs_pred:
-        _plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
 
-    if display_error_boxplots:
+    scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
+    scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
+
+    print(scores_averaged)
+
+    if display:
+        _plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
         _plot_error_boxplots(gtruth,
                              preds,
                              nodes=['DEF0C', 'DEF07', 'DEF0B', 'DEF05', 'DEF0E'],
                              split=5)
-    scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
-    scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
+        # _plot_scores_table(scores_averaged)
 
     return scores_nodewise, scores_averaged
 
