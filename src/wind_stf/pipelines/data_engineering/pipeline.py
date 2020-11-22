@@ -40,7 +40,7 @@ from .nodes import (
     filter_districts,
     convert_kw_to_capfactor,
     build_power_installed_mts,
-    build_power_centroids_mts,
+    handle_anomalous_values,
 )
 
 
@@ -51,11 +51,11 @@ def create_pipeline(**kwargs):
                 func=concatenate,
                 name="Concatenate",
                 inputs=[
-                    # "measurements_hourly_2000",
-                    # "measurements_hourly_2001",
-                    # "measurements_hourly_2002",
-                    # "measurements_hourly_2003",
-                    # "measurements_hourly_2004",
+                    "measurements_hourly_2000",
+                    "measurements_hourly_2001",
+                    "measurements_hourly_2002",
+                    "measurements_hourly_2003",
+                    "measurements_hourly_2004",
                     "measurements_hourly_2005",
                     "measurements_hourly_2006",
                     "measurements_hourly_2007",
@@ -99,6 +99,12 @@ def create_pipeline(**kwargs):
                 name="Transform kW to CF",
                 inputs=["measurements_daily_2000to2015_filtered", "power_installed"],
                 outputs="capacity_factors_daily_2000to2015",
+            ),
+            node(
+                func=handle_anomalous_values,
+                name="Prepare",
+                inputs=["capacity_factors_daily_2000to2015"],
+                outputs="capacity_factors_daily_2000to2015_noanomaly",
             ),
         ]
     )

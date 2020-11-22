@@ -19,7 +19,7 @@ _hdf: &hdf
   save_args:
     mode: 'w'  # overwrite if file already exists
     dropna: False
-    
+
 # datasets
 sensors:
   type: pandas.CSVDataSet
@@ -138,6 +138,12 @@ measurements_daily_2000to2015_filtered:
 capacity_factors_daily_2000to2015:
   type: pandas.HDFDataSet
   filepath: data/04_feature/capfactors-daily-2000-2015.hdf
+  key: df
+  layer: Feature
+
+capacity_factors_daily_2000to2015_noanomaly:
+  type: pandas.HDFDataSet
+  filepath: data/04_feature/capacity_factors_daily_2000to2015_noanomaly.hdf
   key: df
   layer: Feature
 

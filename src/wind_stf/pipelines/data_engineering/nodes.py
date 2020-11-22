@@ -67,6 +67,45 @@ def convert_kw_to_capfactor(
     return capfactors_mts_filled
 
 
+def _validate_data(
+        df_: pd.DataFrame,
+        tolerance: dict ={
+            'nan': False,
+            'inf': False,
+            'value_max': 2.0,
+            'value_min': 0.0
+        },
+    display_culprits: bool = False):
+    inconsistencies = {'NaNs': df_.isna().sum().sum(),
+                       'infs count': np.isinf(df_).sum().sum(),
+                       'value<min count': (df_ < tolerance['value_min']).sum().sum(),
+                       'value>max count': (df_ > tolerance['value_max']).sum().sum()}
+
+    if any([inconsistencies[check]>0 for check in inconsistencies.keys()]):
+        is_valid = False
+    else:
+        is_valid = True
+
+    inconsistencies_distribution = {'NaNs': df_.isna().sum(),
+                'infs': np.isinf(df_).sum(),
+                'value<min': (df_ < tolerance['value_min']).sum(),
+                'value>max': (df_ > tolerance['value_max']).sum()}
+
+    if display_culprits:
+        for culprit in inconsistencies_distribution['value>max'].index:
+            print(df_[culprit].describe()[['50%', '75%', 'max']])
+
+    print(f'Data valid? {is_valid}; Length (years): {len(df_) / 365}; Inconsistency: {inconsistencies}')
+
+    return None
+
+
+def handle_anomalous_values(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.replace([np.inf], 0)
+    _validate_data(df)
+    return df
+
+
 def build_power_installed_mts(sensors: pd.DataFrame) -> pd.DataFrame:
     sensors_sortedbydate = sensors.sort_values('commissioning_date')
     powerdeltas_daily_districtwise = sensors_sortedbydate.groupby(by=['nuts_id', 'commissioning_date'], sort=False).agg(

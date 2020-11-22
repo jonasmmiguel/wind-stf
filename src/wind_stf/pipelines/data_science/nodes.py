@@ -483,7 +483,8 @@ def evaluate(
     scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
 
-    print(scores_averaged)
+    scores_averaged['avg'] = scores_averaged.mean(axis='columns')
+    print(round(scores_averaged['avg'], 3))
 
     if display:
         _plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
@@ -513,7 +514,8 @@ def evaluate_in_kW(
     scores_nodewise = _get_scores(gtruth, preds, metrics, avg=False)
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
 
-    print(scores_averaged)
+    scores_averaged['avg'] = scores_averaged.mean(axis='columns')
+    print(round(scores_averaged['avg'], 3))
 
     if display:
         _plot_gtruth_preds(gtruth, preds, node='DEF0C', split=5)
