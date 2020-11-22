@@ -16,6 +16,8 @@ class ForecastingModel:
         self.freq = modeling['temporal_resolution']
 
     def fit(self, df):
+        df = df[self.targets]
+
         if self.approach == 'HW-ES':
             self.model = MultioutputExponentialSmoothing(self.modeling).fit(df)
 
@@ -34,4 +36,9 @@ class ForecastingModel:
         return self
 
     def predict(self, start, end, scaler: Scaler = None):
-        return self.model.predict(start, end, scaler)
+        df_pred = self.model.predict(start, end)
+
+        if scaler:
+            return scaler.inverse_transform(df_pred)[self.targets]
+        else:
+            return df_pred

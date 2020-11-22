@@ -285,9 +285,9 @@ def train(df_infer_scaled: pd.DataFrame,
     for infer_test_split in range( modeling['n_splits'] ):
         df = df_infer_scaled[infer_test_split]
 
-        # ignore all vars we don't want to model
-        targets = modeling['targets']
-        df = df[targets]
+        # # ignore all vars we don't want to model
+        # targets = modeling['targets']
+        # df = df[targets]
 
         # model[infer_test_split] = {}
         # if cv:
