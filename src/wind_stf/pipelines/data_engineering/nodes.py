@@ -4,10 +4,11 @@ import nvector as nv
 import numpy as np
 from src.utils.data_engineering import weighted_average
 from pandas.core.window.expanding import _Rolling_and_Expanding
+from src.utils.geospatial import build_distances_mx
+from src.utils.gwnet_utils import get_adj_mx
 
 
 _Rolling_and_Expanding.weighted_average = weighted_average
-
 
 def _get_centroid(lat: pd.Series, lon: pd.Series) -> tuple:
     # TODO: currently getting centroid of turbines installed anytime. Get centroid for each day instead!

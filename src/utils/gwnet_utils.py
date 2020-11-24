@@ -12,6 +12,9 @@ import scipy.sparse as sp
 import torch
 from scipy.sparse import linalg
 
+from src.utils.geospatial import build_distances_mx
+from typing import List, Tuple, Dict
+
 # DEFAULT_DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 DEFAULT_DEVICE = 'cpu'
 ADJ_CHOICES = ['scalap', 'normlap', 'symnadj', 'transition', 'identity']
@@ -108,6 +111,25 @@ def get_adjacency_matrix(distance_df, sensor_ids, normalized_k=0.1):
     # Sets entries that lower than a threshold, i.e., k, to zero for sparsity.
     adj_mx[adj_mx < normalized_k] = 0
     return sensor_ids, sensor_id_to_ind, adj_mx
+
+
+def build_adjacency_mx(D: pd.DataFrame) -> pd.DataFrame:
+    std = D.values.std()
+    A = np.exp( -np.square(D / std) )
+    return A
+
+
+def prune_adjacency_mx(A: pd.DataFrame, D: pd.DataFrame, threshold_distance: float) -> pd.DataFrame:
+    A_sparse = A.copy(deep=True)
+    A_sparse[D.values > threshold_distance] = 0
+    return A_sparse
+
+
+def get_adj_mx(targets: List[str], nodes_coords: Dict[str, Tuple[float]], threshold_distance: float) -> pd.DataFrame:
+    D = build_distances_mx(targets, nodes_coords)
+    A = build_adjacency_mx(D)
+    A_sparse = prune_adjacency_mx(A, D, threshold_distance)
+    return A_sparse
 
 
 def sym_adj(adj):
@@ -337,3 +359,27 @@ def plot_loss_curve(log_dir):
 
 def make_results_table():
     return pd.DataFrame({os.path.basename(c): summary(c) for c in glob('logs/*')}).T.sort_values('valid_loss')
+
+
+if __name__ == '__main__':
+    import yaml
+    # targets = ['DEF07', 'DEF0C', 'DEF05', 'DEF0E', 'DEF0B']
+    with open(r'../../conf/base/parameters.yml') as file:
+        pars = yaml.load(file, Loader=yaml.FullLoader)
+    targets = pars['modeling']['targets']
+
+    centroids = pd.read_hdf('../../data/04_feature/power-centroids-positions-2000-2015.hdf')
+    centroids_median = centroids.loc['2005-01-01':'2015-12-31', targets].median()
+    nodes_coords = {district_id: tuple(centroids_median[district_id]) for district_id in targets}
+    A = get_adj_mx(targets, nodes_coords, threshold_distance=100.0)
+
+    adj_mx_object = [
+        targets,
+        {k: v for k, v in enumerate(targets)},
+        A.values
+    ]
+
+    with open('../../data/04_feature/adj_mx_object.pkl', 'wb') as f:
+        pickle.dump(adj_mx_object, f)
+
+    print(A)
