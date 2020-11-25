@@ -19,7 +19,7 @@ modeling:
   forecast_horizon: 7
   preprocessing:
     - get_quantile_equivalent_normal_dist
-    - make_strictly_positive
+#    - make_strictly_positive
   hyperpars:
 #    period_to_forecast: 7
      hidden_layer_units: 16  # default 128
