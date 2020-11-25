@@ -42,6 +42,7 @@ from .nodes import (
     evaluate,
     evaluate_in_kW,
     report_scores,
+    test_nbeats
 )
 
 
@@ -85,6 +86,12 @@ def create_pipeline(**kwargs):
                         ],
                 outputs='model',
             ),
+            # node(
+            #     func=test_nbeats,
+            #     name=r'TEST',
+            #     inputs=['df_infer_scaled'],
+            #     outputs=None,
+            # ),
             node(
                 func=evaluate,
                 name=r'Evaluate',

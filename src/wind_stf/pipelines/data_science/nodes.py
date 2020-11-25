@@ -304,7 +304,7 @@ def define_cvsplits(cv_params: Dict[str, Any], df_infer: pd.DataFrame) -> Dict[s
         raise NotImplementedError(f'CV method not recognized: {cv_method}')
 
 
-def train(df_infer_scaled: pd.DataFrame,
+def train(df_infer_scaled: Dict[int, pd.DataFrame],
           modeling: Dict[str, Any],
           # cv: Dict[str, Any]
           ) -> Dict[int, Dict[str, Any]]:
@@ -575,3 +575,19 @@ def report_scores(scoreboard: pd.DataFrame, model_metadata: Any, cv_splits_dict:
     # TODO: use metrics from utils/metrics.py
     model_scores = _evaluate_model(model_metadata, cv_splits_dict)
     _update_scoreboard(model_scores)
+
+
+def test_nbeats(df_: Dict[int, pd.DataFrame]):
+
+    import pickle
+    with open('data/05_model_input/df_infer_scaled.pkl', 'rb') as f:
+        df = pickle.load(f)
+
+    y = df[0]
+    from nbeats_forecast import NBeats
+    data = y[['DE40D']].to_numpy().reshape((-1, 1))
+    model = NBeats(data=data, period_to_forecast=1, save_checkpoint=False, train_percent=0.05, mode='cpu')
+    model.fit()
+    preds = model.predict()
+    # print(df_[0].head(3))
+    return None
