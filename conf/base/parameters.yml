@@ -14,7 +14,7 @@ modeling:
     end:                                      # a string, unless for research purposes
       earliest_allowed: 2015-01-01
       latest_allowed: 2015-12-31
-  n_splits: 6                                # 1, unless for research purposes
+  n_splits: 51                                # 1, unless for research purposes
   gap: 0
   forecast_horizon: 7
   preprocessing:
@@ -22,16 +22,16 @@ modeling:
 #    - make_strictly_positive
   hyperpars:
 #    period_to_forecast: 7
-     hidden_layer_units: 8  # default 128
-     backcast_length: 3
-     train_percent: 0.1
+     hidden_layer_units: 128  # default 128
+     backcast_length: 7
+     train_percent: 0.90
      mode: 'cpu'
-#     epochs: 1
+     epoch: 100
   targets:
      - DE40D
-#     - DE40F
-#     - DE405
-#     - DE40I
+     - DE40F
+     - DE405
+     - DE40I
 #     - DE407
 #     - DE40B
 #     - DE40G
