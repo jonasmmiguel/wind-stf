@@ -14,7 +14,7 @@ modeling:
     end:                                      # a string, unless for research purposes
       earliest_allowed: 2015-01-01
       latest_allowed: 2015-12-31
-  n_splits: 1                                 # 1, unless for research purposes
+  n_splits: 5                                 # 1, unless for research purposes
   gap: 0
   forecast_horizon: 7
   preprocessing:
