@@ -204,6 +204,7 @@ scaler:
 model:
   type: pickle.PickleDataSet
   filepath: data/06_models/model.pkl
+  backend: joblib
   versioned: false
   layer: Models
 

@@ -28,36 +28,36 @@ modeling:
      - DE40D
      - DE40F
      - DE405
-     - DE40I
-     - DE407
-     - DE40B
-     - DE40G
-     - DE406
-     - DE40H
-     - DE408
-     - DE40E
-     - DE80O
-     - DE80M
-     - DE80J
-     - DE80N
-     - DE80L
-     - DEF03
-     - DEF05
-     - DEF0E
-     - DEF06
-     - DEF07
-     - DEF08
-     - DEF09
-     - DEF0A
-     - DEF0B
-     - DEF0C
-     - DEF0F
-     - DE80K
-     - DE803
-     - DEF0D
-     - DE40A
-     - DE402
-     - DE401
+#     - DE40I
+#     - DE407
+#     - DE40B
+#     - DE40G
+#     - DE406
+#     - DE40H
+#     - DE408
+#     - DE40E
+#     - DE80O
+#     - DE80M
+#     - DE80J
+#     - DE80N
+#     - DE80L
+#     - DEF03
+#     - DEF05
+#     - DEF0E
+#     - DEF06
+#     - DEF07
+#     - DEF08
+#     - DEF09
+#     - DEF0A
+#     - DEF0B
+#     - DEF0C
+#     - DEF0F
+#     - DE80K
+#     - DE803
+#     - DEF0D
+#     - DE40A
+#     - DE402
+#     - DE401
 
 
 evaluation:
