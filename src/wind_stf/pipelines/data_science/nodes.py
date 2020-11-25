@@ -514,6 +514,7 @@ def evaluate(
     scores_averaged = _get_scores(gtruth, preds, metrics, avg=True)
 
     scores_averaged['avg'] = scores_averaged.mean(axis='columns')
+    scores_averaged['std'] = scores_averaged.std(axis='columns')
     print(round(scores_averaged, 3))
 
     if display:
