@@ -13,7 +13,7 @@ class MultiOutputNBEATS(object):
         self.y = y
 
     def fit(self):
-        self.model = {col: NBeats(data=self.y[[col]].to_numpy().reshape((-1, 1)), period_to_forecast=self.forecast_horizon).fit() for col in self.y}
+        self.model = {col: NBeats(data=self.y[[col]].to_numpy().reshape((-1, 1)), **self.hyperpars).fit() for col in self.y}
         self.freq = self.y.index.freq
         return self
 

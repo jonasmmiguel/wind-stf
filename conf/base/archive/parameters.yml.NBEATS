@@ -14,16 +14,16 @@ modeling:
     end:                                      # a string, unless for research purposes
       earliest_allowed: 2015-01-01
       latest_allowed: 2015-12-31
-  n_splits: 6                                 # 1, unless for research purposes
+  n_splits: 12                                 # 1, unless for research purposes
   gap: 0
   forecast_horizon: 7
   preprocessing:
     - get_quantile_equivalent_normal_dist
     - make_strictly_positive
   hyperpars:
-#    - period_to_forecast: 7
-     - hidden_layer_units: 8  # default 128
-     - backcast_length: 3
+#    period_to_forecast: 7
+     hidden_layer_units: 16  # default 128
+     backcast_length: 3
   targets:
      - DE40D
      - DE40F

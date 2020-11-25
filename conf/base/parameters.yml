@@ -7,57 +7,57 @@ cv:
 
 
 modeling:
-  approach: HW-ES
+  approach: NBEATS
   temporal_resolution: D                      # daily resolution
   model_inference_horizon:
     start: 2005-01-01
     end:                                      # a string, unless for research purposes
       earliest_allowed: 2015-01-01
       latest_allowed: 2015-12-31
-  n_splits: 51                                 # 1, unless for research purposes
+  n_splits: 1                                 # 1, unless for research purposes
   gap: 0
   forecast_horizon: 7
   preprocessing:
     - get_quantile_equivalent_normal_dist
     - make_strictly_positive
   hyperpars:
-      trend: additive
-      seasonal: multiplicative
-      seasonal_periods: 90
+#    period_to_forecast: 7
+     hidden_layer_units: 16  # default 128
+     backcast_length: 3
   targets:
      - DE40D
      - DE40F
      - DE405
-     - DE40I
-     - DE407
-     - DE40B
-     - DE40G
-     - DE406
-     - DE40H
-     - DE408
-     - DE40E
-     - DE80O
-     - DE80M
-     - DE80J
-     - DE80N
-     - DE80L
-     - DEF03
-     - DEF05
-     - DEF0E
-     - DEF06
-     - DEF07
-     - DEF08
-     - DEF09
-     - DEF0A
-     - DEF0B
-     - DEF0C
-     - DEF0F
-     - DE80K
-     - DE803
-     - DEF0D
-     - DE40A
-     - DE402
-     - DE401
+#     - DE40I
+#     - DE407
+#     - DE40B
+#     - DE40G
+#     - DE406
+#     - DE40H
+#     - DE408
+#     - DE40E
+#     - DE80O
+#     - DE80M
+#     - DE80J
+#     - DE80N
+#     - DE80L
+#     - DEF03
+#     - DEF05
+#     - DEF0E
+#     - DEF06
+#     - DEF07
+#     - DEF08
+#     - DEF09
+#     - DEF0A
+#     - DEF0B
+#     - DEF0C
+#     - DEF0F
+#     - DE80K
+#     - DE803
+#     - DEF0D
+#     - DE40A
+#     - DE402
+#     - DE401
 
 
 evaluation:

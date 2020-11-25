@@ -1,7 +1,9 @@
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
 import pandas as pd
 from typing import Dict, Any
-
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tools.sm_exceptions import ConvergenceWarning
+import warnings
+warnings.simplefilter('ignore', ConvergenceWarning)
 
 class ExponentialSmoothingRNN(object):
     ...
