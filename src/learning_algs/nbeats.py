@@ -21,7 +21,7 @@ class MultiOutputNBEATS(object):
 
     def predict(self, start, end) -> pd.DataFrame:
         forecasts_timestamps = pd.date_range(start=start, end=end, freq=self.freq)
-        forecasts = {col: self.model[col].predict(start, end) for col in self.targets}
+        forecasts = {col: self.model[col].predict() for col in self.targets}
 
         df_pred = pd.DataFrame(
             forecasts,

@@ -24,6 +24,7 @@ modeling:
 #    period_to_forecast: 7
      hidden_layer_units: 16  # default 128
      backcast_length: 3
+     mode: 'cuda:1'
   targets:
      - DE40D
      - DE40F
