@@ -7,7 +7,7 @@ cv:
 
 
 modeling:
-  approach: ARIMA
+  approach: HW-ES
   temporal_resolution: D                      # daily resolution
   model_inference_horizon:
     start: 2005-01-01
@@ -19,11 +19,11 @@ modeling:
   forecast_horizon: 7
   preprocessing:
     - get_quantile_equivalent_normal_dist
-#    - make_strictly_positive
+    - make_strictly_positive
   hyperpars:
-    p: 3        # how many AR parameters
-    d: 1        # levels of differences
-    q: 1        # how many MA parameters
+      trend: additive
+      seasonal: multiplicative
+      seasonal_periods: 90
   targets:
      - DE40D
      - DE40F

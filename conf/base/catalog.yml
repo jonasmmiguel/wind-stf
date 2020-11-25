@@ -205,6 +205,8 @@ model:
   type: pickle.PickleDataSet
   filepath: data/06_models/model.pkl
   backend: joblib
+  save_args:
+    compress: 3
   versioned: false
   layer: Models
 
