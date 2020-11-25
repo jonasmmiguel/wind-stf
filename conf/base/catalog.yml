@@ -117,34 +117,46 @@ measurements_hourly_2015:
   <<: *csv
   filepath: data/01_raw/power-generation/wpinfeed_inkW_nuts3_2015_utc.csv
 
-measurements_hourly_2000to2015:
+measurements_hourly:
   type: pandas.HDFDataSet
-  filepath: data/02_intermediate/measurements-hourly-2000-2015.hdf
+  filepath: data/02_intermediate/measurements-hourly.hdf
   key: measurements_hourly
   layer: Intermediate
 
-measurements_daily_2000to2015:
+measurements_daily:
   type: pandas.HDFDataSet
-  filepath: data/02_intermediate/measurements-daily-2000-2015.hdf
+  filepath: data/02_intermediate/measurements-daily.hdf
   key: measurements
   layer: Intermediate
 
-measurements_daily_2000to2015_filtered:
+measurements_daily_filtered:
   type: pandas.HDFDataSet
-  filepath: data/03_primary/measurements-daily-2000-2015-filtered.hdf
+  filepath: data/03_primary/measurements-daily-filtered.hdf
   key: measurements_filtered
   layer: Primary
 
-capacity_factors_daily_2000to2015:
+capacity_factors_daily:
   type: pandas.HDFDataSet
-  filepath: data/04_feature/capfactors-daily-2000-2015.hdf
+  filepath: data/04_feature/capfactors-daily.hdf
   key: df
   layer: Feature
 
-capacity_factors_daily_2000to2015_noanomaly:
+capacity_factors_daily_noanomaly:
   type: pandas.HDFDataSet
-  filepath: data/04_feature/capacity_factors_daily_2000to2015_noanomaly.hdf
+  filepath: data/04_feature/capacity_factors_daily_noanomaly.hdf
   key: df
+  layer: Feature
+
+capacity_factors_daily_2005to2015_noanomaly_targets:
+  type: pandas.HDFDataSet
+  filepath: data/04_feature/capacity_factors_daily_noanomaly_targets.hdf
+  key: w
+  layer: Feature
+
+capacity_factors_daily_2005to2015_noanomaly_targets_scaled:
+  type: pandas.HDFDataSet
+  filepath: data/04_feature/capacity_factors_daily_noanomaly_targets_scaled.hdf
+  key: w
   layer: Feature
 
 #df_test:
@@ -174,7 +186,7 @@ df_infer_scaled:
 inference_test_splits_positions:
   type: pickle.PickleDataSet
   filepath: data/05_model_input/inference_test_splits_positions.pkl
-  versioned: true
+  versioned: false
   layer: Model Input
 
 cv_splits_positions:
@@ -186,13 +198,13 @@ cv_splits_positions:
 scaler:
   type: pickle.PickleDataSet
   filepath: data/05_model_input/scaler.pkl
-  versioned: true
+  versioned: false
   layer: Model Input
 
 model:
   type: pickle.PickleDataSet
   filepath: data/06_models/model.pkl
-  versioned: true
+  versioned: false
   layer: Models
 
 model_metadata:
@@ -204,13 +216,13 @@ model_metadata:
 scores_averaged:
   type: pickle.PickleDataSet
   filepath: data/08_reporting/scores_averaged.pkl
-  versioned: true
+  versioned: false
   layer: Reporting
 
 scores_nodewise:
   type: pickle.PickleDataSet
   filepath: data/08_reporting/scores_nodewise.pkl
-  versioned: true
+  versioned: false
   layer: Reporting
 
 scoreboard:

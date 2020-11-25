@@ -12,3 +12,5 @@ if __name__ == '__main__':
 
     cf = cf[slice('2005-01-01', '2015-12-31')]
     cf[targets].to_hdf('/home/jonasmmiguel/Documents/learning/poli/thesis/wind-stf/data/04_feature/capacity_factors_daily_2005to2015_noanomaly_targets.hdf', 'w')
+    cf[targets].to_hdf('/home/jonasmmiguel/Documents/learning/poli/thesis/wind-stf/data/04_feature/capacity_factors_daily_2005to2015_noanomaly_targets.hdf', 'w')
+    cf[targets].to_hdf()

@@ -160,6 +160,36 @@ def scale(df: pd.DataFrame,
     return [df_infer_scaled, scaler]
 
 
+def scale_(df: pd.DataFrame,
+          modeling: Dict[str, Any],
+          ) -> List[Any]:
+
+    preprocessing = modeling['preprocessing']
+
+    # TODO: split in a previous, separate pipeline node
+    df_infer = df
+
+    if preprocessing:
+        # instantiate pipeline with steps defined in preprocessing params
+        scaler = make_pipeline(
+            *[registered_transformers[step] for step in preprocessing]
+        )
+
+        scaler = scaler.fit( df_infer )
+
+        # transformation output is a numpy array
+        df_infer_scaled = pd.DataFrame(
+            data=scaler.transform(df_infer),
+            index=df_infer.index,
+            columns=df_infer.columns,
+        )
+    else:
+        scaler = None
+        df_infer_scaled = df_infer
+
+    return [df_infer_scaled, scaler]
+
+
 def define_inference_test_splits(modeling: Dict[str, Any],
                                  stratify: bool = True
                                  ) -> Dict[int, Dict[str, Any]]:
