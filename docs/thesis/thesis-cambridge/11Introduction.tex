@@ -1,20 +1,30 @@
 \chapter{Introduction}
-Harvesting energy from renewable sources is key in progressing towards carbon neutrality.
-Worldwide, about US\$ 107/year have been invested in wind power alone, with countries weighting their investment decisions on the outcomes of initiatives such as the German Energiewende.
-Two key challenges limit the increase in renewables share in energy portfolios (i.e. their penetration): intermittency and non-dispatchability of the currently predominant renewables harvesting.
-Wind power generation, for instance, depends primarily on local wind speeds, which vary in interplaying patterns in space and time: an inevitable consequence of the turbulence flows \cite{pope2001turbulent}).
+Harvesting energy from renewable sources is key in progressing towards carbon neutrality and sustainable development in general.
+Today, the more than 340000 wind turbines generate energy matching 4\% of overall electricity consumption worldwide.
+In the EU, this proportion reaches 10\%.
+The sector is currently sized at US\$ 100 bi/year in worldwide investments, and it is growing.
+Wind power installed capacity doubles every 5 years, and it should triplicate until 2030 to meet UN sustainability goals.
+
+Two key challenges limit the increase in renewables share in energy portfolios: high intermittency and low dispatchability of the predominant harvesting approaches.
+Wind power generation, for instance, depends primarily on local wind speeds, which vary in interplaying, stochastic patterns in space and time: an inevitable consequence of the turbulence flows \cite{pope2001turbulent}).
 At the same time, unbalances in power supply and demand cause the network frequency to deviate from the conditions the consumer nodes are designed for.
-This causes losses for the society e.g. due to shorter equipments lifespans, higher maintenance costs and productivity loss.
-To mitigate the economical loss, more dispatchable (e.g. coal) power plants are often used.
+This implies losses for the society e.g. due to shorter equipments lifespans, higher maintenance costs and productivity loss.
 
-In practice, not accurately knowing how much wind power will be harvested in a certain time and region means power providers have to rely on unnecessarily larger safety margins for equalizing supply and demand, often by dispatching less environmentally friendly power plants which often is results in higher costs and environmental footprint.
-Being unable to dispatch on-demand and not knowing how much wind power will be available at a given point in time ultimately limits the renewables penetration in the energy market.
+In practice, not being able to accurately know how much wind power will be harvested at a certain point in time and region means network stakeholders have to rely on unnecessarily larger safety margins for equalizing supply and demand, often by dispatching less environmentally friendly power plants which often is results in higher costs and environmental footprint.
+Being unable to be dispatched on demand and not presenting steady yields ultimately limits the renewables share in the energy market.
+At stake is the success of large-scale initiatives such as the $\textit{Energiewende}$ in Germany, which has enabled increased renewables feasibility and whose outcomes weight in the investiment decision of stakeholders worldwide.
 
-Basically two approaches are used to handle renewables intermittency and non-dispatchability as they gain share in energy portfolios.
+Two principles are used to tackle the challenge of intermittency and dispatchability in renewables.
 First, by increasing system capacitancy via energy storage.
-Under current technology, this is mostly realized as large gravitational energy reservoirs or as large battery banks.
-Although approaching both issues, the extent of their efficacy is   in terms of lifetime environemtal footprint and initial costs.
-A more economical, ecological complementary alternative is forecasting.
+Under current technology, this is mostly realized as large gravitational energy reservoirs or as large battery banks, which entail significant initial costs and equipment lifetime environmental footprint.
+In this context, forecasting power generation arises as a second, complimentary principle, with potentially much smaller economical and environmental costs.
+
+Forecasting renewables power generation encompasses techniques from
+
+This is less true for conventional, mostly rule-based meteorological forecasting approaches, which rely on physical models in computational fluid dynamics to predict renewables sources availability over time.
+
+
+
 
 Forecasting
 
@@ -53,6 +63,6 @@ More sophisticated models that allow capturing these dependencies require howeve
 We hypothesize that, in use cases dominated by spatio-temporal dependencies, significant forecasting performance gains can be achieved by spatio-temporal, multi-variate, Machine Learning-based approaches.
 
 \section{Our Contribution}
-First, we delineate the state-of-the-art approaches for temporal and spatio-temporal forecasting in different domains, including statistical, machine learning-based approaches.
+First, we delineate the state-of-the-art approaches for temporal and spatio-temporal forecasting in different domains, including statistical and machine learning-based approaches.
 Second, we apply selected approaches for forecasting daily regional wind power generation in Germany.
 By benchmarking against more conventional temporal, univariate, statistical approaches, we investigate to what extent more sophisticated modeling approaches add value in terms of accuracy in the use case of onshore wind power generation.
