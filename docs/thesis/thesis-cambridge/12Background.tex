@@ -22,8 +22,10 @@ The liberalized EU grid system counts yet with another kind of entity, the balan
 
 \begin{figure}[H]% H manda colocar exatamente nessa posição no texto (relativa aos parágrafos anterior e posterior)
 	\centering
-    \caption{The different stages of electricity supply and the responsible parties in a liberalized market. Adapted from \cite{erbach2016market}.}
-    \includegraphics[scale=0.35]{electricity_grid_players.png}
+    \caption{The different stages of electricity supply and the responsible parties in a liberalized market.}
+    \includegraphics[scale=0.35]{electricity_grid_players.png} \\
+    \raggedright
+    Source: Adapted from \cite{erbach2016market}.
 	\label{fig:electricity_grid_players}
 \end{figure}
 
@@ -42,8 +44,10 @@ P = C_p\eta_{m} \eta_{e}  \cdot \frac{1}{2}\rho \cdot A(D)\cdot v^3
 In this equation, $D$ and $H$ are design variables. The air density $\rho$ may vary during operation due to changes in air temperature, but its effects are often negligible. Finally, $C_p$, $v$ depend both on design (e.g., hub height $H$, blade profiles) and operation conditions (e.g., velocity speed and direction).
 \begin{figure}[H] % H manda colocar exatamente nessa posição no texto (relativa aos parágrafos anterior e posterior)
 	\centering
-    \caption{ The different stages of the overall wind power conversion process. Adapted from \cite{molina2011modelling}.}
-    \includegraphics[scale=0.6]{wind_power_conversion_stages.png}
+    \caption{ The different stages of the overall wind power conversion process. }
+    \includegraphics[scale=0.6]{wind_power_conversion_stages.png} \\
+    \raggedright
+    Source: Adapted from \cite{molina2011modelling}.
 	\label{fig:wind_power_conversion_stages}
 \end{figure}
 
@@ -91,8 +95,10 @@ The main requirement for a forecasting model concerns the accuracy of its foreca
 Assessing the performance of a model $f$ requires defining the time indexes $t$ for evaluating the forecast errors $e_{t}$ . In a naive approach, one could use all available data for both model inference and evaluation. This would, however, result in a highly biased estimate of the model generalization performance. Less biased estimations could be attained instead by partitioning the available dataset into a \textit{training dataset} $\boldsymbol{y} _{1:T} = \{y_1,…,y_T\}$, exclusive for model inference, and a \textit{test dataset} $\boldsymbol{y} _{T+1:T'} = \{y_{T+1},…,y_{T'}\}$, used for model evaluation (\ref{fig:training_test_split}). Once an estimate for the model performance is attained, a separate model inference using both partitions can be carried out, so that the epistemic part of the generalization error, resulting from limited data in model inference, is kept at a minimum.
 \begin{figure}[H]% H manda colocar exatamente nessa posição no texto (relativa aos parágrafos anterior e posterior)
 	\centering
-    \caption{Partitioning the available data in training and test datasets (adapted from \cite{krispin2019handson}).}
-    \includegraphics[scale=0.8]{traintest_split.png}
+    \caption{Partitioning the available data in training and test datasets.}
+    \includegraphics[scale=0.8]{traintest_split.png} \\
+    \raggedright
+    Source: Adapted from \cite{krispin2019handson}.
 	\label{fig:training_test_split}
 \end{figure}
 
@@ -101,8 +107,10 @@ Furthermore, it is necessary that this partitioning results in two sets of succe
 As the forecast error generally increases for longer forecasting horizons, the out-of-sample estimate might overestimate the generalization error, especially if only one-step forecasts are of interest. For overcoming this, only the  first point in the test data is used in evaluating the error. This approach is known as \textit{expanding window cross-validation}, and is illustrated in \ref{fig:expanding_window_cv}.
 \begin{figure}[H]% H manda colocar exatamente nessa posição no texto (relativa aos parágrafos anterior e posterior)
 	\centering
-    \caption{The expanding window cross-validation scheme (adapted from \cite{krispin2019handson}).}
-    \includegraphics[scale=0.8]{expanding_window_cv.png}
+    \caption{The expanding window cross-validation scheme.}
+    \includegraphics[scale=0.8]{expanding_window_cv.png} \\
+    \raggedright
+    Source: Adapted from \cite{krispin2019handson}.
 	\label{fig:expanding_window_cv}
 \end{figure}
 
@@ -146,24 +154,26 @@ By summarizing the forecast error distribution into a reduced set of values, for
 
 On the one hand, single metrics concisely convey information about the error distribution, which is useful for comparing models and making decisions. On the other hand, a single metric cannot convey all aspects of the error distribution, and often using more than one metric becomes necessary to ensure sufficiency \cite{armstrong2002principles}. Therefore, deciding on a group of metrics often involves a trade-off between conciseness and sufficiency.
 
-Metrics differ in interpretability, scale invariance, sensitivity to outliers, symmetric penalization of negative and positive errors, and behavior predictability as $y_t \rightarrow 0$ \cite{hyndman2006metrics}. Therefore, it is important that the choice on the metrics set is coherent with the application requirements \cite{armstrong2002principles}. For example, while failing to forecast single sudden peaks in local wind speed (wind gusts) might not be important in wind farm planning, it might be a primary requirement for wind turbine operation. 
+Metrics differ in interpretability, scale invariance, sensitivity to outliers, symmetric penalization of negative and positive errors, and smoothness as $y_t$ approaches zero \cite{hyndman2006metrics}. Therefore, it is important that the choice on the metrics set is coherent with the application requirements \cite{armstrong2002principles}. For example, while failing to forecast single sudden peaks in local wind speed (wind gusts) might not be important in wind farm planning, it might be a primary requirement for wind turbine operation.
 Table \ref{table_metrics} summarizes sensitivities for the presented metrics.
 \begin{table}[h]
     \centering
     \caption{Forecasting accuracy metrics and their sensitivities to scale and outliers.}
     \label{table_metrics}
-    \begin{tabular}{llcc}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llcccc}
         \hline
-        Alias  & Name                                       & \begin{tabular}[c]{@{}c@{}}Scale\\ Sensitivity\end{tabular} & \begin{tabular}[c]{@{}c@{}}Outliers\\ Sensitivity\end{tabular} \\ \hline
-        RMSE   & Root Mean Squared Error                    & \fullcirc                                    & \fullcirc                                       \\
-        MAE    & Mean Absolute Error                        & \fullcirc                                    & \fullcirc                                       \\
-        MASE   & Mean Absolute Scaled Error                 & \emptycirc                                   & \fullcirc                                       \\
-        MAPE   & Mean Absolute Percentual Error             & \emptycirc                                   & \fullcirc                                       \\
-        MdAPE  & Median Absolute Percentual Error           & \emptycirc                                   & \emptycirc                                      \\
-        sMAPE  & Symmetric Mean Absolute Percentual Error   & \emptycirc                                   & \emptycirc                                      \\
-        sMdAPE & Symmetric Median Absolute Percentual Error & \emptycirc                                   & \emptycirc                                      \\
-        MdRAE  & Median Relative Absolute Error             & \emptycirc                                   & \emptycirc                                      \\ \hline
+        Alias  & Name                                       & \begin{tabular}[c]{@{}c@{}}Scale\\ Sensitivity\end{tabular} & \begin{tabular}[c]{@{}c@{}}Outliers\\ Sensitivity \end{tabular} & \begin{tabular}[c]{@{}c@{}}Smoothness\\at $y_t \rightarrow 0$ \end{tabular} & \begin{tabular}[c]{@{}c@{}}Symmetry\\at $e_t=0$ \end{tabular} \\ \hline
+        RMSE   & Root Mean Squared Error                    & \fullcirc                                    & \fullcirc                                       & \fullcirc                  & \emptycirc \\
+        MAE    & Mean Absolute Error                        & \fullcirc                                    & \fullcirc                                       & \fullcirc                  & \emptycirc \\
+        MASE   & Mean Absolute Scaled Error                 & \emptycirc                                   & \fullcirc                                       & \fullcirc                  & \emptycirc \\
+        MAPE   & Mean Absolute Percentual Error             & \emptycirc                                   & \fullcirc                                       & \emptycirc                 & \emptycirc \\
+        MdAPE  & Median Absolute Percentual Error           & \emptycirc                                   & \emptycirc                                      & \emptycirc                 & \emptycirc \\
+        sMAPE  & Symmetric Mean Absolute Percentual Error   & \emptycirc                                   & \emptycirc                                      & \emptycirc                 & \fullcirc \\
+        sMdAPE & Symmetric Median Absolute Percentual Error & \emptycirc                                   & \emptycirc                                      & \emptycirc                 & \fullcirc \\
+        MdRAE  & Median Relative Absolute Error             & \emptycirc                                   & \emptycirc                                      & \fullcirc                  & \emptycirc \\ \hline
     \end{tabular}
+    }
 \end{table}
 
 Although often the most important one, accuracy is often just one of many requirements in a forecasting model development. In \cite{armstrong2002principles}, Armstrong reports that value inference time, cost savings resulting from improved decisions, interpretability, usability, ease of implementation, and development costs (human and computational resources) tend to be of comparable importance to researchers, practitioners, and decision-makers.
@@ -295,8 +305,10 @@ Below we present selected deep learning methods helpful for understanding curren
 \textbf{RNN (Recurrent Neural Network)} uses the recurrent layer as building block: a cell that updates its state according to (a) its previous state $h_{t-1}$ and (b) its current input $x_t$ (\ref{fig:rnn}). By performing this update at every timestep of a time series, this basic structure allows the RNN to express temporal dependencies in time series. An RNN can be built by serializing several of these self-looping cells between the input layer and the output layer for achieving higher-order mappings and thus capturing more complex temporal dependencies. The major limitation of RNN in its basic design (recurrent layer as in \ref{fig:rnn}) is its inability to capture dependencies that exist across longer periods than a few timesteps. It arises from a phenomenon called \textit{vanishing gradients}: while inferring optimal parameters via gradient descent (learning phase), the gradients calculated via backpropagation through time become too small to guide the optimization.
 \begin{figure}[H]
 	\centering
-    \caption{The basic RNN architecture in its unfolded representation. Arrows indicate transfers of input and hidden states (adapted from \cite{paneru2015lstm}. Every block concatenates the last hidden state with the current input, passing the result to an activation function (tanh in this illustration). The result is carried forward as the updated hidden state.}
-    \includegraphics[scale=0.45]{rnn.png}
+    \caption{The basic RNN architecture in its unfolded representation. Arrows indicate transfers of input and hidden states. Every block concatenates the last hidden state with the current input, passing the result to an activation function (tanh in this illustration). The result is carried forward as the updated hidden state.}
+    \includegraphics[scale=0.45]{rnn.png}  \\
+    \raggedright
+    Source: Adapted from \cite{paneru2015lstm}.
 	\label{fig:rnn}
 \end{figure}
 
@@ -304,8 +316,10 @@ Below we present selected deep learning methods helpful for understanding curren
 \textbf{LSTM (Long-Short Term Memory)} is a type of RNN, and improves on its basic design most importantly by including an long memory state which is allowed to be transferred across several update steps with only minimal changes (superior horizontal line inside the repeating module in \ref{fig:lstm}. This allows information to persist across many cell updates, thus making it possible to capture long-term dependencies. The extent to which this long memory state is preserved is controlled by forget gate, illustrated in figure \ref{fig:lstm}) by the leftmost vertical path inside the cell. The other paths represent other gated state transfers, which determine how (a) the previous cell state, (b) the previous long memory state and (c) the current cell inputs are combined and passed to the next cell iteration and as input to deeper layers.
 \begin{figure}[H]
 	\centering
-    \caption{Basic LSTM architecture in its unfolded representation (adapted from \cite{paneru2015lstm}). }
-    \includegraphics[scale=0.45]{lstm.png}
+    \caption{Basic LSTM architecture in its unfolded representation. }
+    \includegraphics[scale=0.45]{lstm.png}  \\
+    \raggedright
+    Source: Adapted from \cite{paneru2015lstm}.
 	\label{fig:lstm}
 \end{figure}
 
@@ -313,8 +327,10 @@ Below we present selected deep learning methods helpful for understanding curren
 \textbf{NBEATS} uses as building block (a) a multi-layer fully connected network with ReLU nonlinearities, which feed (b) basis layers that generate a backcast and a forecast output. Blocks are arranged into stacks, organized to form a model (\ref{fig:nbeats}.  Models resulting from this architecture consistently outperformed state-of-the-art methods for univariate forecasting across different horizons and thousands of time series datasets of different nature, while using a single hyperparameter configuration \cite{oreshkin2019nbeats}.
 \begin{figure}[H]
 	\centering
-    \caption{NBEATS architecture (adapted from \cite{oreshkin2019nbeats}).}
-    \includegraphics[scale=0.3]{nbeats.png}
+    \caption{NBEATS architecture.}
+    \includegraphics[scale=0.3]{nbeats.png}  \\
+    \raggedright
+    Source: Adapted from \cite{oreshkin2019nbeats}.
 	\label{fig:nbeats}
 \end{figure}
 
@@ -350,8 +366,10 @@ For some forecasting problems such as for the weather-conditioned wind power gen
 \textbf{DCRNN (Diffusion Convolutional RNN).} RNN is leveraged by replacing the matrix multiplication by a diffusion convolution \cite{liu2020intro}). Motivated by the traffic forecasting problem, where spatial dependencies are directional (non-Euclidean), Li et al. \cite{li2018dcrnn}) recast the spatio-temporal evolution of a variable as a diffusion process on a directed graph, where every node corresponds to a sensor. Learning is performed via (1) diffusion convolution, further integrated with a (2) seq-to-seq learning framework, and a (3) scheduled sampling for modeling long-term dependencies (\ref{fig:dcrnn}).
 \begin{figure}[H]
 	\centering
- 	  \caption{The DCRNN architecture (adapted from \cite{li2018dcrnn}).}
-		\includegraphics[scale=0.45]{dcrnn.png}
+ 	\caption{The DCRNN architecture.}
+	\includegraphics[scale=0.45]{dcrnn.png}  \\
+    \raggedright
+    Source: Adapted from \cite{li2018dcrnn}.
 	\label{fig:dcrnn}
 \end{figure}
 
@@ -359,8 +377,10 @@ For some forecasting problems such as for the weather-conditioned wind power gen
 \textbf{ST-GCN.} A spatial-temporal graph is generated by stacking graph frames from all timesteps, each frame representing the graph state at a specific time (\ref{fig:stgcn}). The spatial-temporal graph is partitioned, and to each of its nodes is assigned a weight vector. Finally, a graph convolution is performed on the weighted spatial-temporal graph.
 \begin{figure}[H]
 	\centering
- 	\caption{ST-GCN underlying principle (adapted from \cite{liu2019st-mgcn}).}
-	\includegraphics[scale=0.25]{stgcn.png}
+ 	\caption{ST-GCN underlying principle.}
+	\includegraphics[scale=0.25]{stgcn.png}  \\
+    \raggedright
+    Source: Adapted from \cite{liu2019st-mgcn}.
 	\label{fig:stgcn}
 \end{figure}
 
@@ -368,8 +388,10 @@ For some forecasting problems such as for the weather-conditioned wind power gen
 \textbf{GWNet.} The Graph Wavenet uses as building blocks a Temporal Convolution Network (TCN) and a Graph Convolution Network (GCN) for capturing spatio-temporal dependencies in every module. A core idea is the usage of a learnable self-adaptative adjacency matrix, which allows node dependencies to change over time and not necessarily be determined by their distances \cite{wu2019graphwavenet, liu2020intro}.
 \begin{figure}[H]
 	\centering
-    \caption{The Graph Wavenet architecture (adapted from \cite{wu2019graphwavenet}).}
-    \includegraphics[scale=0.5]{graphwavenet.png}
+    \caption{The Graph Wavenet architecture.}
+    \includegraphics[scale=0.5]{graphwavenet.png}  \\
+    \raggedright
+    Source: Adapted from \cite{wu2019graphwavenet}.
 	\label{fig:graphwavenet}
 \end{figure}
 
