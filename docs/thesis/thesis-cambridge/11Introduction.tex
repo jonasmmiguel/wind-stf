@@ -1,32 +1,58 @@
 \chapter{Introduction}
+Harvesting energy from renewable sources is key in progressing towards carbon neutrality.
+Worldwide, about US\$ 107/year have been invested in wind power alone, with countries weighting their investment decisions on the outcomes of initiatives such as the German Energiewende.
+Two key challenges limit the increase in renewables share in energy portfolios (i.e. their penetration): intermittency and non-dispatchability of the currently predominant renewables harvesting.
+Wind power generation, for instance, depends primarily on local wind speeds, which vary in interplaying patterns in space and time: an inevitable consequence of the turbulence flows \cite{pope2001turbulent}).
+At the same time, unbalances in power supply and demand cause the network frequency to deviate from the conditions the consumer nodes are designed for.
+This causes losses for the society e.g. due to shorter equipments lifespans, higher maintenance costs and productivity loss.
+To mitigate the economical loss, more dispatchable (e.g. coal) power plants are often used.
+
+In practice, not accurately knowing how much wind power will be harvested in a certain time and region means power providers have to rely on unnecessarily larger safety margins for equalizing supply and demand, often by dispatching less environmentally friendly power plants which often is results in higher costs and environmental footprint.
+Being unable to dispatch on-demand and not knowing how much wind power will be available at a given point in time ultimately limits the renewables penetration in the energy market.
+
+Basically two approaches are used to handle renewables intermittency and non-dispatchability as they gain share in energy portfolios.
+First, by increasing system capacitancy via energy storage.
+Under current technology, this is mostly realized as large gravitational energy reservoirs or as large battery banks.
+Although approaching both issues, the extent of their efficacy is   in terms of lifetime environemtal footprint and initial costs.
+A more economical, ecological complementary alternative is forecasting.
+
+Forecasting
+
+
 Phenomena presenting high socio-economical relevance which are governed by complex dependencies of both spatial and temporal nature are found in diverse domains such as epidemiology, criminology, transportation, climate science and astrophysics \cite{atluri2018datamining}.
-Indeed, the ability to describe a system's behavior is most valuable on instances downstream in the arrow of time: forecasting \cite{armstrong2002principles}.
+Indeed, the ability to describe a system's behavior is particularly valuable for estimating its states ahead of time: forecasting \cite{armstrong2002principles}.
 Accurate, scalable and feasible rule-based forecasting modeling, however, remains elusive in many cases.
 Especially as ubiquitous and continuous monitoring data become available, data-driven approaches emerge as a promising alternative.
 
 Conventional data-driven approaches alone, however, have often shown to add limited value in spatio-temporal forecasting \cite{makridakis2018waysforward}.
 A major reason for this limitation lies on the assumptions they rely upon being typically violated in spatio-temporal settings.
 Stationarity assumption most of the statistical approaches from time series analysis, while earlier machine learning methods assume data instances are independent and identically distributed (i.i.d.) \cite{atluri2018datamining}.
-Recently, deep learning-based approaches have shown to be able to overcome this essentially by (a) modelling both spatial and temporal dependencies and (b) considering spatial similarities in terms less obvious than geographical proximity alone \cite{li2018dcrnn, liu2019st-mgcn, wu2019graphwavenet}.
+Recently, deep learning-based approaches have shown to be able to overcome this essentially by (a) modelling both spatial and temporal dependencies and (b) considering proximities in terms less obvious than Euclidean distances alone \cite{li2018dcrnn, liu2019st-mgcn, wu2019graphwavenet}.
 
-In the context of renewables, accurately estimating power generation ahead of time poses a major obstacle in progressing towards carbon neutrality in power generation.
-Heavily conditioned on weather and climate, harvesting energy from renewable sources is characterized by intermittency.
-Wind power generation, for instance, depends primarily on local wind speeds, which heavily vary in both time and space.
-Climate changes further aggravates this character, as wind speeds variability are expected to increase \cite{moemken2018windspeedchanges}.
-Not accurately knowing how much wind power will be harvested in a certain time and region means power providers have to rely on unnecessarily larger safety margins provided by conventional power plants for ensuring sufficient power supply.
-This ultimately hampers the expansion of wind farms and represents therefore a loss for the society, as part of the paid overall generated power is lost, as well as for the environment, as less environment-friendly power sources have to be relied upon \cite{delarue2015intermittency}.
+In the context of renewables, being unable to accurately determine power generation ahead of time poses a major obstacle in progressing towards carbon neutrality.
+This is a consequence of intermittency of power availability in renewables, heavily conditioned on weather and climate.
 
-For countries committed to large-scale initiatives such as the \textit{Energiewende} in Germany, this poses a major hindrance in decreasing overall carbon footprint in a sustainable fashion.
+
+The intemittency in harvesting energy
+
+
+Another approach
+
+The intermmitency in  can be handled essentially either by energy storage
+This ultimately hampers the expansion of wind farms and represents a loss for the society, as part of the paid overall generated power is lost, as well as for the environment, as less environment-friendly power sources have to be relied upon \cite{delarue2015intermittency}.
+At stake is the success of wind power initiatives worldwide, which currently represent about US\$ 107 bi / year in investments.
+such as the \textit{Energiewende} in Germany, where  this poses a major hindrance in decreasing overall carbon footprint in a sustainable fashion.
 Accuracy on wind power generation forecasting hence has significant impact on both socio-economical and environmental aspects, in both short and long terms.
 
 \section{Problem Statement}
 In spatio-temporal problems, observations of a variable of interest over neighboring locations present not only temporal but also spatial dependencies.
-While local time series can be predicted individually using conventional univariate statistical techniques, information contained in their spatial and spatio-temporal correlations represent a potential for improving forecasting accuracies. More sophisticated models that allow capturing these dependencies require however supporting evidence on their potential gains that justify the tipicaly longer development times they entail.
+While local time series can be predicted individually using conventional univariate statistical techniques, information contained in their spatial and spatio-temporal correlations represent a potential for improving forecasting accuracies.
+More sophisticated models that allow capturing these dependencies require however supporting evidence on their potential gains that justify the tipically higher development costs they entail.
 
 \section{Our Hypothesis}
 We hypothesize that, in use cases dominated by spatio-temporal dependencies, significant forecasting performance gains can be achieved by spatio-temporal, multi-variate, Machine Learning-based approaches.
 
 \section{Our Contribution}
 First, we delineate the state-of-the-art approaches for temporal and spatio-temporal forecasting in different domains, including statistical, machine learning-based approaches.
-Second, we apply selected approaches for forecasting weekly regional wind power generation in Germany.
+Second, we apply selected approaches for forecasting daily regional wind power generation in Germany.
 By benchmarking against more conventional temporal, univariate, statistical approaches, we investigate to what extent more sophisticated modeling approaches add value in terms of accuracy in the use case of onshore wind power generation.
