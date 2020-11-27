@@ -15,7 +15,7 @@
 \section{Requirements}\label{sec:reqs}
 The most valuable kind of information they require for driving decisions of balance responsible parties (BRPs) are wind forecasts for daily power generation in subregional scale.
 Therefore, we focus this work on these resolution requirements: daily, districtwise forecasts.
-With regards to scales, we focus on predictions with weekly forecast horizon, across 33 districts in northern Germany.
+With regards to scales, we focus on predictions with weekly forecast horizon, across 33 selected districts in northern Germany.
 For models evaluation, we use a scheme resembling an expanding window evaluation scheme across 52 weeks in 2015, with training sets spanning from 2005-01-01 to one day before the first test timestamp of each train-test split.
 The 52 train-test split positions are defined by first partitioning all 2015 timestamps in 52 time windows of the same length.
 The $k$-th split position is then defined by randomly choosing a timestamp in the $k$-th time window.
@@ -67,7 +67,7 @@ We attribute the latter to commissioning data being wrongly assigned to later ti
 This motivated selecting districts and timespans for which data is both more available and consistent \ref{fig:availability_target}.
 
 In a second step in our analysis, we identified major spatial and temporal conditions underlying the data generation.
-Fig. \ref{fig:availability_overall} presents heatmaps for power generation normalized by the installed power at each timestep (i.e. the CF).
+Figure \ref{fig:availability_overall} presents heatmaps for power generation normalized by the installed power at each timestep (i.e. the CF).
 A clear pattern of seasonality can be seen, with yearly peaks in power generation between december and january represented by horizontal lines spanning across all harvesting districts.
 We also notice some regions present consistently less CF than others (e.g. the group of leftmost columns in \ref{fig:availability_overall}).
 Inquiries indicated they represent regions such as Baden-Würtemberg where most of the capacity installed corresponds to older commissionings.
@@ -100,20 +100,20 @@ Over the last decade, Germany has been commissioning more midsized turbines clos
     \label{fig:germany_maps}
     \subfloat[][Turbines geodistribution.]{
         \label{fig:turbine_locations}
-        \includegraphics[width=0.5\textwidth]{turbines-spatial-distribution}
+        \includegraphics[width=0.4\textwidth]{turbines-spatial-distribution}
     }
     \subfloat[][Installed capacity by district.]{
         \label{fig:installed_capacity}
-        \includegraphics[width=0.5\textwidth]{power-installed-map}
+        \includegraphics[width=0.4\textwidth]{power-installed-map}
     }
     \\
     \subfloat[][Geodistribution over time of rated power in new commissionings.]{
         \label{fig:spacetime_turbines}
-        \includegraphics[width=0.75\textwidth]{map_turbines_locations_20200701_230854_fav}
+        \includegraphics[width=0.6\textwidth]{map_turbines_locations_20200701_230854_fav}
     }
 \end{figure}
 
-The second step in our analysis concerned the determination of (1) how power generation is distributed and (2) what is a typical production behavior.
+The third step in our analysis concerned the inquiries of (1) how power generation is distributed and (2) what is a typical production behavior.
 The kernel-estimated density function for the districtwise, yearly average power generation (e.g. figure \ref{fig:yearly_power_generation}) suggests a unimodal, approximately log-normal distribution.
 
 \begin{figure}[H]%
@@ -126,7 +126,7 @@ The kernel-estimated density function for the districtwise, yearly average power
 We noticed near-median yearly power productions tend to be distributed across time as the one shown in figure \ref{fig:deb22_production_2015}.
 The observed Weibull distribution is in agreement with accounts in the literature \cite{blaabjerg2017electronics, engeland2017variability, he2014short-term}.
 Here, we notice an important behavior trend: not only the measurements values vary, but also their amplitude, as new turbines are commissioned (and decommissioned).
-This is specially significant in the case of Germany, where wind power generation rapidly increases its share in the energy portfolio.
+This is specially significant in the case of Germany, where wind power generation rapidly increases its penetration.
 
 \begin{figure}[H]%
 	\centering
@@ -170,8 +170,8 @@ The nature of the Weibull density function suggests that any linear scale such a
 %As a consequence, the models performance would be unnecessarily more conditioned on the numerical precision, %which could eventually provoke unwanted loss of informational entropy.
 %In fact, any linear transformation would incur in the same shortcoming.
 
-In a third step of our exploratory data analysis, we investigated to what extent power generation is correlated in space and time.
-For the spatial dependency, we inquired \textit{"how more similarly do closer districts behave than distant ones?"}.
+In a fourth step of our exploratory data analysis, we investigated to what extent power generation is correlated in space and time.
+For the spatial dependency, we inquired \textit{how more similarly do closer districts behave than distant ones?}.
 We performed this by assessing how pairwise Spearman correlations between districts change as districts are more distant from one another \cite{engeland2017variability}.
 We verified that pairwise Spearman correlations between closer districts are significantly higher than distant ones, evidencing a significant spatial character for power production (\ref{fig:correlogram}).
 In fact, districts present significant correlations ($\rho_s>0.8$) for distances up to about 150 km.
@@ -212,7 +212,8 @@ Below, we summarize the main consequences this analysis had to our design decisi
 
 \vspace{1em}
 \noindent
-\textbf{Preprocessing.} Handling missing data is not necessary, but scaling the time series e.g. into capacity factors is expected to heavily influence model performances. Weibull-distributed time series might require non-linear scaling.
+\textbf{Preprocessing.} Handling missing data is not necessary, but scaling the time series e.g. into capacity factors is expected to heavily influence model performances.
+Weibull-distributed time series require non-linear scaling, such as Quantiles Transformation.
 
 \vspace{1em}
 \noindent

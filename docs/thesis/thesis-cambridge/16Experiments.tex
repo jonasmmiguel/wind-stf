@@ -1,11 +1,34 @@
-\chapter{Experiments Settings}
+\chapter{Experiments Settings}\label{chap:experiments}
+All forecasting approaches are trained and evaluated for 33 pre-defined districts in northern Germany on a same set of 52 weeks in 2015 (52 train-test splits).
+Training time windows are set to range from 2005-01-01 to the respective the train-test split position in 2015.
+located within 80 km distance from one another, (b) model inference time window from 2013-01-01 to 2015-06-22 and test time window from 2015-06-23 to 2015-06-29.
+With regards of model tuning, only manual procedure was carried out.
 
-Currently, all forecasting approaches are evaluated on a reduced case consisting of (a) 5 districts on northern Germany (DEF0C, DEF07, DEF0B, DEF05, DEF0E) located within 80 km distance from one another, (b) model inference time window from 2013-01-01 to 2015-06-22 and test time window from 2015-06-23 to 2015-06-29. We chose the test time window to be in a year period known to be less susceptible to wind gusts and other weather anomalies. Both models were evaluated in terms of predictions in capacity factors, with cross-districts uniform average of metrics. With regards of model tuning, only manual procedure has been carried out.
+The chosen set of metrics MAE, RMSE and MdRAE was chosen for the purpose of models evaluation by considering that:
+\begin{itemize}
+    \item (a) the value of interest CF often assume near-zero values (percentage-based metrics thus being innappropriate);
+    \item (b) it is desirable to have error metrics having the same scale as the CF itself;
+    \item (c) it is desirable to assess how much better every approach perform in comparison to a baseline (naïve) approach;
+    \item (d) as CF often assume near-zero values, the naïve approach forecasts would also often be assume near-zero depending on the infer-time split timestamp.
+\end{itemize}
 
 \vspace{1em}
 \noindent
-\textbf{HW-ES.} For preprocessing, relies on quantile transformation into a normal distribution, followed by an offsetting by the absolute value of the minimum of every scaled time series. The latter step is performed to ensure model inputs are strictly positive so as to allow for multiplicative seasonal approach in the HW-ES method. As for hyperparameters, we use additive trend, multiplicative seasonal, seasonal period of 7 steps (days).
+\textbf{ARIMA.} For preprocessing, relies on quantile transformation into a normal distribution.
+As for hyperparameters, we use $(p,q,d) = (3,1,1)$.
 
 \vspace{1em}
 \noindent
-\textbf{GWNet.} For preprocessing, relies on a Z-standard scaling. As for hyperparameters, we define most importantly the number of nodes (5), the sequence length (12), the learning rate (1E-3), and the learning decay rate (0.97).
+\textbf{HW-ES.} For preprocessing, relies on quantile transformation into a normal distribution, followed by an offsetting by the absolute value of the minimum of every scaled time series.
+The latter step is performed to ensure model inputs are strictly positive so as to allow for multiplicative seasonal approach in the HW-ES method.
+As for hyperparameters, we use additive trend, multiplicative seasonal, seasonal period of 7 steps (days).
+
+\vspace{1em}
+\noindent
+\textbf{NBEATS.} For preprocessing, relies on quantile transformation into a normal distribution.
+As for hyperparameters, we define most importantly the number of hidden layers (128), forecast horizon (i.e. forecast timesteps, 7), the number of training epochs (100), with other values set as in \cite{Oreshkin2019a}.
+
+\vspace{1em}
+\noindent
+\textbf{GWNet.} For preprocessing, relies on quantile transformation into a normal distribution.
+As for hyperparameters, we define most importantly the number of nodes (33), the number of output timesteps (7), the number of training epochs (100), with other values set as in \cite{wu2019graphwavenet} (e.g. learning rate at 1e-3, learning decay rate 0.97).

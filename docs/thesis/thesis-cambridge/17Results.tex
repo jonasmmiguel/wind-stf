@@ -1,22 +1,32 @@
 \chapter{Results}
 
-Table \ref{tab:performances} summarizes the models performances, according to cross-district uniform averages of metrics.
-For the reduced case, the spatio-temporal approach GWNet generally outperforms the purely temporal approach HW-ES.
-In a larger-scale study case including more districts, we expect the gap between the models to increase, as GWNet can make use of more inter-time series correlations.
-The current very limited reduced case does not allow us to draw definite conclusions on approaches capabilities beyond this, so further comparisons on larger-scales cases are necessary.
+Table \ref{tab:performances} summarizes the models performances in terms of means and standard deviations for each metric, both estimated over all 33 districts and 52 infer-test splits, for predictions of CF.
+The choice of metrics was made in accordance to the use case requirements, as described in chapter \ref{chap:experiments}.
 
-\begin{table}[H]
-    \centering
-    \caption{Performance comparison of different approaches for wind power generation in reduced case.}
-    \label{tab:performances}
-\begin{tabular}{l|cc}
-
+\begin{table}[]
+\centering
+\caption{Performances of different forecasting approaches for the wind power generation use case. Metrics are calculated on basis of CF values at test timestamps.}
+\label{tab:performances}
+\begin{tabular}{c|rrr}
 \hline
-\textbf{Metric} & \textbf{HW-ES} & \textbf{GWNet} \\ \hline
-MAE             & 0.182          & \textbf{0.091}          \\
-RMSE            & \textbf{0.116}          & 0.131          \\
-MAPE            & 45.4\%         & \textbf{1.78}\%         \\ \hline
+Model  & \multicolumn{1}{c}{MAE} & \multicolumn{1}{c}{RMSE} & \multicolumn{1}{c}{MdRAE} \\ \hline
+ARIMA  & 0.143 (0.078)           & 0.174 (0.093)            & 0.963 (0.563)             \\
+HW-ES  & 0.177 (0.099)           & 0.214 (0.107)            & 1.106 (0.521)             \\
+NBEATS & 0.105 (0.050)           & 0.131 (0.066)            & 0.984 (0.389)             \\
+GWNet  & \textbf{0.086 (0.045)}  & \textbf{0.107 (0.056)}   & \textbf{0.812 (0.335)}    \\ \hline
 \end{tabular}
 \end{table}
 
-
+\begin{table}[]
+\centering
+\caption{Computation time at training, in $s/(districts \cdot splits)$.}
+\label{tab:traininttimes}
+\begin{tabular}{cr}
+\hline
+Model  & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Training \\ Time\end{tabular}} \\ \hline
+ARIMA  & 0.6                                                                             \\
+HW-ES  & 1.1                                                                             \\
+NBEATS & 40.6                                                                            \\
+GWNet  & 33.2                                                                            \\ \hline
+\end{tabular}
+\end{table}
