@@ -525,7 +525,7 @@ def evaluate(
                              split=5)
         # _plot_scores_table(scores_averaged)
 
-    return scores_nodewise, scores_averaged
+    return scores_nodewise, scores_averaged, {'gtruth': gtruth, 'preds': preds}
 
 
 def evaluate_in_kW(

@@ -100,7 +100,7 @@ def create_pipeline(**kwargs):
                         'inference_test_splits_positions',
                         'params:evaluation',
                         'scaler'],
-                outputs=['scores_nodewise', 'scores_averaged'],
+                outputs=['scores_nodewise', 'scores_averaged', 'gtruth_e_preds'],
             ),
             # node(
             #     func=evaluate_in_kW,

@@ -1,7 +1,9 @@
 \chapter{Results}
 
-Table \ref{tab:performances} summarizes the models performances in terms of means and standard deviations for each metric, both estimated over all 33 districts and 52 infer-test splits, for predictions of CF.
+Table \ref{tab:performances} summarizes the models performances in terms of means and standard deviations for each metric, both estimated over all 33 districts and 52 train-test splits, for predictions of CF.
 The choice of metrics was made in accordance to the use case requirements, as described in chapter \ref{chap:experiments}.
+Table \ref{tab:trainingtimes} show the overall training times for each method, normalized by the number of districts (33) and the number of train-test splits (52).
+We found that GWNet models outperformed the statistical counterpart models by more than 38\% in terms of RMSE, while also presenting the shortest training times.
 
 \begin{table}[]
 \centering
@@ -11,7 +13,7 @@ The choice of metrics was made in accordance to the use case requirements, as de
 \hline
 Model  & \multicolumn{1}{c}{MAE} & \multicolumn{1}{c}{RMSE} & \multicolumn{1}{c}{MdRAE} \\ \hline
 ARIMA  & 0.143 (0.078)           & 0.174 (0.093)            & 0.963 (0.563)             \\
-HW-ES  & 0.177 (0.099)           & 0.214 (0.107)            & 1.106 (0.521)             \\
+HW-ES  & 0.168 (0.083)           & 0.228 (0.107)            & 1.106 (0.521)             \\
 NBEATS & 0.105 (0.050)           & 0.131 (0.066)            & 0.984 (0.389)             \\
 GWNet  & \textbf{0.086 (0.045)}  & \textbf{0.107 (0.056)}   & \textbf{0.812 (0.335)}    \\ \hline
 \end{tabular}
@@ -19,14 +21,14 @@ GWNet  & \textbf{0.086 (0.045)}  & \textbf{0.107 (0.056)}   & \textbf{0.812 (0.3
 
 \begin{table}[]
 \centering
-\caption{Computation time at training, in $s/(districts \cdot splits)$.}
-\label{tab:traininttimes}
+\caption{Computation time at training, in $s/(districts \cdot splits)$. Univariate models ARIMA, HW-ES and NBEATS were trained without paralellization. GWNet models were trained using GPU acceleration.}
+\label{tab:trainingtimes}
 \begin{tabular}{cr}
 \hline
 Model  & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Training \\ Time\end{tabular}} \\ \hline
-ARIMA  & 0.6                                                                             \\
-HW-ES  & 1.1                                                                             \\
+ARIMA  & 1.12                                                                            \\
+HW-ES  & 0.63                                                                            \\
 NBEATS & 40.6                                                                            \\
-GWNet  & 33.2                                                                            \\ \hline
+GWNet  & 0.49                                                                            \\ \hline
 \end{tabular}
 \end{table}

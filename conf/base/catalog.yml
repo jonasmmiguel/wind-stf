@@ -210,6 +210,15 @@ model:
   versioned: false
   layer: Models
 
+gtruth_e_preds:
+  type: pickle.PickleDataSet
+  filepath: data/07_model_output/gtruth_e_preds.pkl
+#  backend: joblib
+#  save_args:
+#    compress: 3
+  versioned: false
+  layer: Models
+
 model_metadata:
   type: pandas.JSONDataSet
   filepath: data/08_reporting/model_metadata.json
