@@ -9,7 +9,7 @@ We found that GWNet models outperformed the statistical counterpart models by mo
 \centering
 \caption{Performances of different forecasting approaches for the wind power generation use case. Metrics are calculated on basis of CF values at test timestamps.}
 \label{tab:performances}
-\resizebox{\linewidth}{!}{%
+\resizebox{0.8\linewidth}{!}{%
 \begin{tabular}{c|rrr}
 \toprule
 Model  & \multicolumn{1}{c}{MAE} & \multicolumn{1}{c}{RMSE} & \multicolumn{1}{c}{MdRAE}  \\
@@ -23,16 +23,20 @@ GWNet  & \textbf{0.086 (0.045)}  & \textbf{0.107 (0.056)}   & \textbf{0.812 (0.3
 }
 \end{table}
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Computation time at training, in $s/(districts \cdot splits)$. Univariate models ARIMA, HW-ES and NBEATS were trained without paralellization. GWNet models were trained using GPU acceleration.}
 \label{tab:trainingtimes}
+\resizebox{0.5\linewidth}{!}{%
 \begin{tabular}{cr}
+\toprule
+Model  & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Training \\ Time\\ $[s/(districts \cdot splits)]$\end{tabular}}  \\
 \hline
-Model  & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Training \\ Time\end{tabular}} \\ \hline
-ARIMA  & 1.12                                                                            \\
-HW-ES  & 0.63                                                                            \\
-NBEATS & 40.6                                                                            \\
-GWNet  & 0.49                                                                            \\ \hline
+ARIMA  & 1.12                                                                                                           \\
+HW-ES  & 0.63                                                                                                           \\
+NBEATS & 40.6                                                                                                           \\
+GWNet  & 0.49                                                                                                           \\
+\bottomrule
 \end{tabular}
+}
 \end{table}
