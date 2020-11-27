@@ -48,7 +48,7 @@ if __name__ == '__main__':
     df = df[targets]
 
     # Plot
-    display = False
+    display = True
     if display:
         fig = go.Figure(go.Heatmap(
             z=df.values,
@@ -63,12 +63,17 @@ if __name__ == '__main__':
         # Configure layout
         fig.update_layout(
             template='ggplot2',
+            yaxis=dict(
+                tickmode='array',
+                tickvals=[pd.Timestamp(f'{year}-01-01') for year in range(2000, 2017) ],
+                ticktext=[year for year in range(2000, 2017)],
+            )
         )
 
-        fig.show()
-
+        # fig.show()
+        fig.write_image("/home/jonasmmiguel/Documents/learning/poli/thesis/wind-stf/data/08_reporting/data_availability.jpg")
     # Validate
-    validate_data(df)
+    # validate_data(df)
 
 
 

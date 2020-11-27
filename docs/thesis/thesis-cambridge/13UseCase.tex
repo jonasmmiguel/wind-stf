@@ -15,14 +15,10 @@
 \section{Requirements}\label{sec:reqs}
 The most valuable kind of information they require for driving decisions of balance responsible parties (BRPs) are wind forecasts for daily power generation in subregional scale.
 Therefore, we focus this work on these resolution requirements: daily, districtwise forecasts.
-With regards to scale, we focus on week-ahead, country-wide predictions.
-We set the localization of interest for these forecasts as weeks in June 2015 in Germany.
-
-This time period is known to be less susceptible to wind gusts and other weather anomalies in the region.
-By doing this, we avoid models being evaluated on untypical or abnormal settings, which we prioritize for comparing overall \textit{expectations} of performances of models arising from different forecasting approaches.
-We choose this country due to the availability and quality of its wind power generation datasets \cite{becker2017completion}.
-Furthermore, we limit our scope to point forecasting predictions, although uncertainty quantification could potentially add more value and even be a key requirement for these players in practice.
-
+With regards to scales, we focus on predictions with weekly forecast horizon, across 33 districts in northern Germany.
+For models evaluation, we use a scheme resembling an expanding window evaluation scheme across 52 weeks in 2015, with training sets spanning from 2005-01-01 to one day before the first test timestamp of each train-test split.
+The 52 train-test split positions are defined by first partitioning all 2015 timestamps in 52 time windows of the same length.
+The $k$-th split position is then defined by randomly choosing a timestamp in the $k$-th time window.
 
 \section{Datasets}\label{sec:datasets}
 For all investigations in this work, we use the two datasets from \cite{becker2017completion}.
@@ -33,7 +29,7 @@ The measurements dataset (fig. \ref{table:measurements-dataset}) consists of mea
 
 \begin{table}[H]
 \centering
-\caption{Measurements dataset} \label{table:measurements-dataset}
+\caption{Measurements dataset. Values in kW for districtwise, hourly power generation} \label{table:measurements-dataset}
 \begin{tabular}{lcccc}
 \hline
 \multicolumn{1}{c}{t}   & DE145 & DE114 & ... & DE12A \\ \hline
@@ -59,15 +55,17 @@ $\dots$                      & $\dots$                         & $\dots$        
 \end{tabular}
 \end{table}
 
-Both datasets were compiled and prepared by authors in \cite{becker2017completion}, most importantly by imputing missing entries (about 15\% in the measurements dataset, 8\% in the sensors dataset) via machine learning-based methods.
+Both datasets were compiled and prepared by authors in \cite{becker2017completion}, most importantly by imputing significant part of the missing entries (about 15\% in the measurements dataset, 8\% in the sensors dataset) via machine learning-based methods, while using physical models (NWPs) and power curves to validate the results.
 
 \section{Exploratory Data Analysis}\label{sec:eda}
 We carried out an exploratory data analysis on both datasets to better understand their generation process, as well as to identify data patterns and limitations.
-As final purpose, we used the findings resulting from this analysis to not only guide our design decisions on both preprocessing and modeling, but also to define our key modeling assumptions.
+We then used these findings to not only guide our design decisions on both preprocessing and modeling, but also to define our key modeling assumptions.
 
-First, we identified major spatial and temporal conditions underlying the data generation.
+We first assessed the data availability.
+
+In a second step in our analysis, we identified major spatial and temporal conditions underlying the data generation.
 Figure \ref{fig:germany_maps} highlights the most relevant findings.
-Figure \ref{fig:turbine_locations} shows how the 23191 onshore wind turbines are spatially distributed across 296 districts harvesting wind power \ref{fig:installed_capacity}.
+Figure \ref{fig:turbine_locations} shows how the 23191 onshore wind turbines are spatially distributed across 296 districts harvesting wind power (fig. \ref{fig:installed_capacity}).
 The northern region still concentrates most of the generation capacity (fig. \ref{fig:installed_capacity}) and concentrates most of the largest units so as to harness the local higher wind power availability \cite{windatlas}.
 Evidence for a contrasting recent trend to this can be seen in figure \ref{fig:spacetime_turbines}.
 Over the last decade, Germany has been commissioning more midsized turbines closer to locations of high electricity demand at the southern and central Germany so as to prevent curtailments due to network congestion \cite{engeland2017variability}.

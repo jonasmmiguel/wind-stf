@@ -31,7 +31,7 @@ The liberalized EU grid system counts yet with another kind of entity, the balan
 
 \section{Wind Power Generation}
 
-In 1920, Betz \cite{betz1920limit} modeled a generic wind harvesting system as an open-disc actuator and, by using the energy conservation equation for a stream tube flowing through this disk, he derived an upper limit for the power harvested by a horizontal-axis wind turbine. The \textit{Betz Limit}, as it is known, is a function of rotor diameter $D$ (via the rotor swept area $A$) and the average free stream wind velocity $v$ at hub height $H$ (\ref{eq:power-ideal}).
+In 1920, Betz \cite{betz1920limit} modeled a generic wind harvesting system as an open-disc actuator and, by using the energy conservation equation for a stream tube flowing through this disk, he derived an upper limit for the power harvested by a horizontal-axis wind turbine. The \textit{Betz Limit}, as it is known, is a function of rotor diameter $D$ (via the rotor swept area $A$) and the average free stream wind velocity $v$ at hub height $H$ (eq. \ref{eq:power-ideal}).
 \begin{equation}\label{eq:power-ideal}
 P_{ideal} = \frac{1}{2}\rho \cdot A(D)\cdot v^3
 \end{equation}
@@ -92,7 +92,7 @@ The main requirement for a forecasting model concerns the accuracy of its foreca
 
 \subsection{Model Evaluation}\label{subsec:model_evaluation}
 
-Assessing the performance of a model $f$ requires defining the time indexes $t$ for evaluating the forecast errors $e_{t}$ . In a naive approach, one could use all available data for both model inference and evaluation. This would, however, result in a highly biased estimate of the model generalization performance. Less biased estimations could be attained instead by partitioning the available dataset into a \textit{training dataset} $\boldsymbol{y} _{1:T} = \{y_1,…,y_T\}$, exclusive for model inference, and a \textit{test dataset} $\boldsymbol{y} _{T+1:T'} = \{y_{T+1},…,y_{T'}\}$, used for model evaluation (\ref{fig:training_test_split}). Once an estimate for the model performance is attained, a separate model inference using both partitions can be carried out, so that the epistemic part of the generalization error, resulting from limited data in model inference, is kept at a minimum.
+Assessing the performance of a model $f$ requires defining the time indexes $t$ for evaluating the forecast errors $e_{t}$ . In a naive approach, one could use all available data for both model inference and evaluation. This would, however, result in a highly biased estimate of the model generalization performance. Less biased estimations could be attained instead by partitioning the available dataset into a \textit{training dataset} $\boldsymbol{y} _{1:T} = \{y_1,…,y_T\}$, exclusive for model inference, and a \textit{test dataset} $\boldsymbol{y} _{T+1:T'} = \{y_{T+1},…,y_{T'}\}$, used for model evaluation (fig. \ref{fig:training_test_split}). Once an estimate for the model performance is attained, a separate model inference using both partitions can be carried out, so that the epistemic part of the generalization error, resulting from limited data in model inference, is kept at a minimum.
 \begin{figure}[H]% H manda colocar exatamente nessa posição no texto (relativa aos parágrafos anterior e posterior)
 	\centering
     \caption{Partitioning the available data in training and test datasets.}
@@ -207,14 +207,15 @@ Table \ref{tab:methods_overview} provides an overview of the approaches reviewed
 \subsubsection{Baseline Approaches}\label{subsubsec:baseline_methods}
 
 \noindent
-\textbf{Naïve method} forecasts the signal as constant at its last observed value (\ref{eq:naive}).
+\textbf{Naïve method} forecasts the signal as constant at its last observed value (eq. \ref{eq:naive}).
+Here, the latest observation is the only important for forecasting \cite{hyndman2018principles}.
 As the naïve forecast is the optimal prediction for a random walk process, it is also known as the \textit{random walk} method.
 \begin{equation}\label{eq:naive}
     \hat{y}_{T+h|T} = y_T
 \end{equation}
 
 \noindent
-\textbf{Seasonal Naïve method} models time series as harmonic with period $k$ observations (i.e., perfectly seasonal with seasonal period $k$), and for a given point  in future, suggest the corresponding last observed value from the last season (\ref{eq:snaive}).
+\textbf{Seasonal Naïve method} models time series as harmonic with period $k$ observations (i.e., perfectly seasonal with seasonal period $k$), and for a given point  in future, suggest the corresponding last observed value from the last season (eq. \ref{eq:snaive}).
 For example, all monthly forecasts for any future June assume the value from the last observed June value.
 \begin{equation}\label{eq:snaive}
     \hat{y}_{T+h|T} = y_{T+h-k}
@@ -228,7 +229,8 @@ For example, all monthly forecasts for any future June assume the value from the
 
 
 \noindent
-\textbf{Historical Average (HA) method.} The forecast for any point assumes a constant value: the average of the historical data (\ref{eq:naive}).
+\textbf{Historical Average (HA) method.} The forecast for any point assumes a constant value: the average of the historical data (e.q. \ref{eq:ha}).
+Here, all observations are considered to have equal importance in determining the forecast \cite{hyndman2018principles}.
 \begin{equation}\label{eq:ha}
 \hat{y}_{T+h|T} = \frac{1}{T}\sum_{t=1}^Ty_t
 \end{equation}
@@ -238,16 +240,20 @@ For example, all monthly forecasts for any future June assume the value from the
 Statistical forecasting approaches are characterized by the modeling of the time series as a realization of a stationary stochastic process \cite{brockwell1990methods}, \cite{bontempi2013strategies}.
 The two most widely used families of statistical methods are the Exponential Smoothing (ES) family and the ARIMA family \cite{hyndman2018principles}.
 
-In the ES approach, the time series is modeled as combination of  interpretable components \cite{brockwell1990methods}. In the \textit{classical decomposition} \cite{makridakis1997arma}, these components are trend component $m$, seasonal component $d$, and random noise (\textit{white noise}) $\varepsilon_t$, which are linearly combined to reconstruct the time series:
+In the ES approach, the time series is modeled as combination of  interpretable components \cite{brockwell1990methods}.
+In the \textit{classical decomposition} \cite{makridakis1997arma}, these components are trend component $m$, seasonal component $d$, and random noise (\textit{white noise}) $\varepsilon_t$, which are linearly combined to reconstruct the time series:
 \begin{equation}\label{eq:ts_classical_decomp}
     y_t = m_t + s_t + a_t .
 \end{equation}
 
 We now describe some of the most known methods from the ES family.
+
 \noindent
-\textbf{SES (Simple Exponential Smoothing method)} predicts for the next period the forecast value for the previous period, adjusting it using the forecast error (\ref{eq:ses}). Parameter: $\alpha \in \mathbb{R}_{[0,1]}$.
+\textbf{SES (Simple Exponential Smoothing method)} forecasts by assigning importance at a maximum for the latest observed value, with exponentially decreasing importance to older observations (eq. \ref{eq:ses}).
+In this sense, it is a compromise between the naïve method and the historical average method \cite{hyndman2018principles}.
+Hyperparameter \footnote[1]{hyperparameters are parameters of the algorithms themselves, termed as such to distinguish them from (model) parameters. We discuss them in \ref{subsec:modelselection}}: $\alpha \in \mathbb{R}_{[0,1]}$.
 \begin{equation}\label{eq:ses}
-    \hat{y}_{t+1} = \hat{y}_{t} + \alpha(\hat{y}_{t} - \hat{y}_{t-1})
+    \hat{y}_{t+1} = \alpha y_{t} + \alpha (1-\alpha) y_{t-1} + \alpha (1-\alpha)^2 y_{t-2} + ... = \alpha y_{t} + (1-\alpha) \hat{y}_{t}
 \end{equation}
 
 \noindent
@@ -260,8 +266,10 @@ We now describe some of the most known methods from the ES family.
     \end{aligned}
 \end{equation}
 
+\newpage
 \noindent
-\textbf{Holt-Winters' method} features additive trend and multiplicative seasonality components, for a seasonality length $m$, and forecasting horizon $h$. Parameters: $(\alpha, \beta^*,\gamma) \in \mathbb{R}^3_{[0,1]}$ (usual bounds, refer to \cite{hyndman2008es} for details).
+\textbf{Holt-Winters' method} features additive trend and multiplicative seasonality components, for a seasonality length $m$, and forecasting horizon $h$.
+Hyperparameter: $(\alpha, \beta^*,\gamma) \in \mathbb{R}^3_{[0,1]}$ (usual bounds, refer to \cite{hyndman2008es} for details).
 \begin{equation}\label{eq:hs_method}
     \begin{aligned}
     \hat{y}_{t+h|t} = (&\ell_t + b_th)s_{t-m+h^+_m}, \\
@@ -271,41 +279,58 @@ We now describe some of the most known methods from the ES family.
     \end{aligned}
 \end{equation}
 
-ARIMA (Autoregressive Integrated Moving Average) methods \cite{box1970distribution} rely on repeatedly applying a difference operator to the observed values until the differenced series resemble a realization of some stationary stochastic process \cite{brockwell1990methods}.
-We denote by $\nabla^k(\cdot)$ the difference operator of order $k$. For $k=1$, $\nabla y_t = y_t - y_{t-1}$; for $k=2$, we have $\nabla^2(y_t) = \nabla(\nabla y_t) = \nabla y_t - \nabla y_{t-1} = y_t -2y_{t-1} + y_{t-2}$  and so forth.
-Another operator useful in ARIMA methods is the \textit{backshift operator} $B^k(\cdot)$ with lag $k$. For $k=1$, we have $B y_t = y_{t-1}$. For $k=2$, $B^2(y_t) = B(B(y_t)) = y_{t-2}$.
+The other family of methods is the ARIMA (Autoregressive Integrated Moving Average) \cite{box1970distribution}.
+Here, methods rely on repeatedly applying a difference operator to the observed values until the differenced series resemble a realization of some stationary stochastic process \cite{brockwell1990methods}.
+We denote by $\nabla^k(\cdot)$ the difference operator of order $k$.
+For $k=1$, $\nabla y_t = y_t - y_{t-1}$; for $k=2$, we have $\nabla^2(y_t) = \nabla(\nabla y_t) = \nabla y_t - \nabla y_{t-1} = y_t -2y_{t-1} + y_{t-2}$ and so forth.
+Another useful notation in ARIMA methods is the \textit{backshift operator} $B^k(\cdot)$ with lag $k$.
+For $k=1$, we have $B y_t = y_{t-1}$.
+For $k=2$, $B^2(y_t) = B(B(y_t)) = y_{t-2}$.
 
 \vspace{1em}
 \noindent
-\textbf{AR (Autoregressive) method.}  Linear regression with past values of the same variable (lagged values) as predictors. A constant level $c$ and a white noise $\varepsilon_t \sim WN(\mu_\varepsilon, \sigma^2_\varepsilon)$ are considered. Parameters: $\boldsymbol{\phi} = [\phi_1 \ \phi_2 \ \cdots \ \ \phi_p]^\top, \ \mu_\varepsilon, \ \sigma_\varepsilon, c$. Hyperparameter: $p$.
+\textbf{AR (Autoregressive) method.}  Linear regression with past values of the same variable (lagged values) as predictors.
+A constant level $c$ and a white noise $\varepsilon_t \sim WN(\mu_\varepsilon, \sigma^2_\varepsilon)$ are considered.
+Parameters: $\boldsymbol{\phi} = [\phi_1 \ \phi_2 \ \cdots \ \ \phi_p]^\top, \ \mu_\varepsilon, \ \sigma_\varepsilon, c$.
+Hyperparameter: $p \in \mathbb{N}$.
 \begin{equation}\label{eq:ar}
 \hat{y}_t = c + \varepsilon_t + \phi_1 y_{t-1} + \phi_2 y_{t-2} + ... + \phi_p y_{t-p}
 \end{equation}
 
 \noindent
-\textbf{MA (Moving Average) method.} Linear regression with lagged forecast errors $\varepsilon_\tau = \hat{y}_\tau - y_\tau$ as predictors. Parameters:$\boldsymbol{\theta} = [\theta_1 \ \theta_2 \ \cdots \ \ \theta_q]^\top, \ \mu_\varepsilon, \ \sigma_\varepsilon, c$. Hyperparameter: $q$.
+\textbf{MA (Moving Average) method.} Linear regression with lagged forecast errors $\varepsilon_\tau = \hat{y}_\tau - y_\tau$ as predictors.
+Parameters:$\boldsymbol{\theta} = [\theta_1 \ \theta_2 \ \cdots \ \ \theta_q]^\top, \ \mu_\varepsilon, \ \sigma_\varepsilon, c$.
+Hyperparameter: $q \in \mathbb{N}$.
 \begin{equation}\label{eq:ma}
     \hat{y}_t = c + \varepsilon_{t} + \theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + ... + \theta_q \varepsilon_{t-q}
 \end{equation}
 
 \noindent
-\textbf{(Non-seasonal) ARIMA method.} Linear regression, with lagged \textit{differenced} values $y_\tau'$ and lagged errors as predictors. It combines autoregression on the differenced time series with a moving average model, hence the name \textit{Autoregressive Integrated Moving Average}, with \textit{integration} referring to the reverse operation of differencing, used when reconstructing the original time series from its differenced version. Parameters:   $\boldsymbol{\phi} = [\phi_1 \ \phi_2 \ \cdots \ \ \phi_p]^\top,\boldsymbol{\theta} = [\theta_1 \ \theta_2 \ \cdots \ \ \theta_q]^\top, \ \mu_\varepsilon, \ \sigma_\varepsilon, c$. Hyperparameters: $p, d, q$.
+\textbf{(Non-seasonal) ARIMA method.} Linear regression, with lagged \textit{differenced} values $y_\tau'$ and lagged errors as predictors.
+It combines autoregression on the differenced time series with a moving average model, hence the name \textit{Autoregressive Integrated Moving Average}, with \textit{integration} referring to the reverse operation of differencing, used when reconstructing the original time series from its differenced version.
+Parameters: $\boldsymbol{\phi} = [\phi_1 \ \phi_2 \ \cdots \ \ \phi_p]^\top,\boldsymbol{\theta} = [\theta_1 \ \theta_2 \ \cdots \ \ \theta_q]^\top, \ \mu_\varepsilon, \ \sigma_\varepsilon, c$.
+Hyperparameters: $(p, d, q)$. $p \in \mathbb{N^3}$
 \begin{equation}\label{eq:arima}
 \hat{y}'_t = c + \varepsilon_t + \phi_1 y'_{t-1} + ... + \phi_p y'_{t-p} + \cdots + \theta_1 \varepsilon_{t-1} + ... + \theta_q \varepsilon_{t-q}
 \end{equation}
 
+\pagebreak
 \subsubsection{Machine Learning Approaches}\label{subsubsec:ml_methods}
 
-Approaches solely based on Machine Learning struggled until recently to consistently outperform statistical time series forecasting approaches \cite{makridakis2018m4}.  Despite relying on biased evidence (e.g., models were evaluated across all time series without any sound choice nor search for hyperparameters), Makridakis claimed in \cite{makridakis2018m4} that ``hybrid approaches and combinations of methods are the way forward for improving the forecasting accuracy and making forecasting more valuable.'' Oreshkin et al. challenged in \cite{oreshkin2019nbeats} this conclusion, introducing N-BEATS, a pure deep learning method that was shown to outperform statistical and hybrid methods, while also ensuring interpretability of intermediate outputs.
+Approaches solely based on Machine Learning struggled until recently to consistently outperform statistical time series forecasting approaches \cite{makridakis2018m4}.
+Relying on biased evidence (e.g., models were evaluated across all time series without any criterious choice nor search for hyperparameters), Makridakis claimed in \cite{makridakis2018m4} that ``hybrid approaches and combinations of methods are the way forward for improving the forecasting accuracy and making forecasting more valuable.''
+Oreshkin et al. challenged this conclusion in \cite{oreshkin2019nbeats}, introducing N-BEATS, a pure deep learning method that was shown to outperform statistical and hybrid methods, while also ensuring interpretability of intermediate outputs.
 
 Below we present selected deep learning methods helpful for understanding current state-of-the-art approaches for both wind power generation-specific applications and in general univariate time series forecasting applications.
 
 \vspace{1em}
 \noindent
-\textbf{RNN (Recurrent Neural Network)} uses the recurrent layer as building block: a cell that updates its state according to (a) its previous state $h_{t-1}$ and (b) its current input $x_t$ (\ref{fig:rnn}). By performing this update at every timestep of a time series, this basic structure allows the RNN to express temporal dependencies in time series. An RNN can be built by serializing several of these self-looping cells between the input layer and the output layer for achieving higher-order mappings and thus capturing more complex temporal dependencies. The major limitation of RNN in its basic design (recurrent layer as in \ref{fig:rnn}) is its inability to capture dependencies that exist across longer periods than a few timesteps. It arises from a phenomenon called \textit{vanishing gradients}: while inferring optimal parameters via gradient descent (learning phase), the gradients calculated via backpropagation through time become too small to guide the optimization.
+\textbf{RNN (Recurrent Neural Network)} uses the recurrent layer as building block: a cell that updates its state according to (a) its previous state $h_{t-1}$ and (b) its current input $x_t$ (fig. \ref{fig:rnn}). By performing this update at every timestep of a time series, this basic structure allows the RNN to express temporal dependencies in time series. An RNN can be built by serializing several of these self-looping cells between the input layer and the output layer for achieving higher-order mappings and thus capturing more complex temporal dependencies.
+The major limitation of RNN in its basic design (recurrent layer as in \ref{fig:rnn}) is its inability to capture dependencies that span across longer periods than a few timesteps.
+It arises from a phenomenon called \textit{vanishing gradients}: while inferring optimal parameters via gradient descent (learning phase), the gradients calculated via backpropagation through time become too small to guide the optimization \cite{paneru2015lstm}.
 \begin{figure}[H]
 	\centering
-    \caption{The basic RNN architecture in its unfolded representation. Arrows indicate transfers of input and hidden states. Every block concatenates the last hidden state with the current input, passing the result to an activation function (tanh in this illustration). The result is carried forward as the updated hidden state.}
+    \caption{The basic RNN architecture in its unfolded representation. Arrows indicate transfers of input and hidden states. Every block concatenates the last hidden state with the current input, passing the result to an activation function ($tanh$ in this illustration). The result is carried forward as the updated hidden state.}
     \includegraphics[scale=0.45]{rnn.png}  \\
     \raggedright
     Source: Adapted from \cite{paneru2015lstm}.
@@ -313,7 +338,10 @@ Below we present selected deep learning methods helpful for understanding curren
 \end{figure}
 
 \noindent
-\textbf{LSTM (Long-Short Term Memory)} is a type of RNN, and improves on its basic design most importantly by including an long memory state which is allowed to be transferred across several update steps with only minimal changes (superior horizontal line inside the repeating module in \ref{fig:lstm}. This allows information to persist across many cell updates, thus making it possible to capture long-term dependencies. The extent to which this long memory state is preserved is controlled by forget gate, illustrated in figure \ref{fig:lstm}) by the leftmost vertical path inside the cell. The other paths represent other gated state transfers, which determine how (a) the previous cell state, (b) the previous long memory state and (c) the current cell inputs are combined and passed to the next cell iteration and as input to deeper layers.
+\textbf{LSTM (Long-Short Term Memory)} is a type of RNN, improving on its basic design most importantly by including an long memory state which is allowed to be transferred across several update steps with only minimal changes (superior horizontal line inside the repeating module in fig. \ref{fig:lstm}).
+This allows information to persist across many cell updates, thus making it possible to capture long-term dependencies.
+The extent to which this long memory state is preserved is controlled by forget gate, which we illustrate in figure \ref{fig:lstm} by the leftmost vertical path inside the cell.
+The other paths represent other gated state transfers, which determine how (a) the previous cell state, (b) the previous long memory state and (c) the current cell inputs are combined and passed to the next cell iteration and as input to deeper layers \cite{paneru2015lstm}.
 \begin{figure}[H]
 	\centering
     \caption{Basic LSTM architecture in its unfolded representation. }
@@ -324,7 +352,9 @@ Below we present selected deep learning methods helpful for understanding curren
 \end{figure}
 
 \noindent
-\textbf{NBEATS} uses as building block (a) a multi-layer fully connected network with ReLU nonlinearities, which feed (b) basis layers that generate a backcast and a forecast output. Blocks are arranged into stacks, organized to form a model (\ref{fig:nbeats}.  Models resulting from this architecture consistently outperformed state-of-the-art methods for univariate forecasting across different horizons and thousands of time series datasets of different nature, while using a single hyperparameter configuration \cite{oreshkin2019nbeats}.
+\textbf{NBEATS} uses as building block (a) a multi-layer fully connected network with ReLU nonlinearities, which feed (b) basis layers that generate a backcast and a forecast output.
+Blocks are arranged into stacks, organized to form a model (fig. \ref{fig:nbeats}).
+Models resulting from this architecture consistently outperformed state-of-the-art methods for univariate forecasting across different horizons and thousands of time series datasets of different nature, while using a single configuration of hyperparameters \cite{oreshkin2019nbeats}.
 \begin{figure}[H]
 	\centering
     \caption{NBEATS architecture.}
@@ -339,7 +369,7 @@ Hybrid methods combine machine learning and statistical approaches by using the 
 
 \vspace{1em}
 \noindent
-\textbf{ES-RNN.} It uses Holt-Winters' ES method as statistical engine for capturing the seasonal and level components from the time series into features, which are then used by an LSTM model to exploit non-linear dependencies.
+\textbf{ES-RNN} uses Holt-Winters' ES method as statistical engine for capturing the seasonal and level components from the time series into features, which are then used as inputs by an LSTM model to exploit non-linear dependencies.
 \begin{equation}\label{eq:esrnn}
     \begin{aligned}
     \hat{y}_{t+h|t} = LS&TM(y_t,\ell_t, s_t)\\
@@ -348,22 +378,38 @@ Hybrid methods combine machine learning and statistical approaches by using the 
     \end{aligned}
 \end{equation}
 
-\subsection{Model Selection}
+\subsection{Model Selection}\label{subsec:modelselection}
 
-As models have parameters, so do methods have their own, often referred to as \textit{hyperparameters}. They may control the space of model parameters configurations, the model inference process or eventually the loss function \cite{hutter2019automated}). Hyperparameters may have a major influence on the performance of resulting models. Accounting for this effect requires yet another partition in order to attain a minimally unbiased estimate of the resulting generalization error. When working with three partitions, one for model inference, another for assessing its generalization error given a hyperparameters configuration and another one for assessing it across different hyperparameters configurations, authors often refer to them as training, validation and test set, respectively.
+As models have parameters, so do methods have their own, often referred to as \textit{hyperparameters}. They may control the space of model parameters configurations, the model inference process or eventually the loss function \cite{hutter2019automated}. Hyperparameters may have a major influence on the performance of resulting models. Accounting for this effect requires yet another partition in order to attain a minimally unbiased estimate of the resulting generalization error.
+When working with three partitions, authors often denominate as:
+\begin{itemize}
+    \item (a) \textit{training set} the one used for model inference;
+    \item (b) \textit{validation set}, the one for assessing model generalization error across multiple configurations of hyperparameters (i.e., for \textit{model selection});
+    \item (c) \textit{test set}, the one for assessing the model generalization error for a \textit{specific} configuration of hyperparameters.
+\end{itemize}
+
+\pagebreak
 
 \section{Spatio-Temporal Forecasting}\label{sec:stf}
+In the spatio-temporal (ST) version of the forecasting task, one aims to attain a function $f: \mathbb{R}^{|V|\times T} \rightarrow \mathbb{R}^{|V|}$ that maps historical observations $\boldsymbol{y}_t = [y_{1,t}\  \  y_{2,t}\ \ \cdots \ \ y_{|V|,t}]^\top$ of a quantity across different regions to its value $\boldsymbol{y}_{t+1}$ in the next timestep  (eq. \ref{eq:stf}).
+Often, regions are represented as vertices $v\in V$ in a graph $G$ modeling their spatial relationthips, in a process known as \textit{node embedding} \cite{liu2020intro}.
 
-In the spatio-temporal (ST) version of this problem, one aims to attain a function $f: \mathbb{R}^{|V|\times T} \rightarrow \mathbb{R}^{|V|}$ that maps historical observations of a quantity across different regions which can be interpreted as graph vertices $v\in V$, $\boldsymbol{y}_t = [y_{1,t}\  \  y_{2,t}\ \ \cdots \ \ y_{|V|,t}]^\top$ ,  to its value $\boldsymbol{y}_{t+1}$ in the next timestep  (\ref{eq:stf}).
 \begin{equation}\label{eq:stf}
     [\boldsymbol{y}_{t-T+1}, \  \cdots\ , \boldsymbol{y}_{t}] \xrightarrow{f(\cdot)} \boldsymbol{y}_{t+1}
 \end{equation}
 
-For some forecasting problems such as for the weather-conditioned wind power generation, the spatial dependency might play an important along with the temporal dependencies themselves \cite{engeland2017variability}). In this work, we consider three different approaches to the ST forecasting problem. In a naïve approach, time series for different locations are modeled independently, thus neglecting spatial dependencies. In a second approach, the time series are modeled jointly via a multivariate forecasting approach, where for generating a single model one relies on historical observations not from a single but from several input variables, which can be expressed by a sequence of input vectors $\boldsymbol{X}_{1:T} = \{\boldsymbol{X}_1, ..., \boldsymbol{X}_T\}$.  Finally, we consider the explicit modeling of both spatial and temporal dependencies via dynamic graphs. The latter approach is represented by the methods presented below.
+In some forecasting problems such as the weather-conditioned wind power generation, the spatial dependency might play an important along with the temporal dependencies themselves \cite{engeland2017variability}.
+In this work, we distinguish between three different approaches to the ST forecasting problem.
+In a naïve approach, time series for different locations are modeled independently, thus neglecting spatial dependencies.
+In a second approach, the time series are modeled jointly via a multivariate forecasting approach, where for generating a single model one relies on historical observations not from a single but from several input variables, which can be expressed by a sequence of input vectors $\boldsymbol{X}_{1:T} = \{\boldsymbol{X}_1, ..., \boldsymbol{X}_T\}$.
+Finally, we consider the explicit modeling of both spatial and temporal dependencies via dynamic graphs.
+The latter approach is represented by the methods presented below.
 
 \vspace{1em}
 \noindent
-\textbf{DCRNN (Diffusion Convolutional RNN).} RNN is leveraged by replacing the matrix multiplication by a diffusion convolution \cite{liu2020intro}). Motivated by the traffic forecasting problem, where spatial dependencies are directional (non-Euclidean), Li et al. \cite{li2018dcrnn}) recast the spatio-temporal evolution of a variable as a diffusion process on a directed graph, where every node corresponds to a sensor. Learning is performed via (1) diffusion convolution, further integrated with a (2) seq-to-seq learning framework, and a (3) scheduled sampling for modeling long-term dependencies (\ref{fig:dcrnn}).
+\textbf{DCRNN (Diffusion Convolutional RNN).} improves RNN by replacing the matrix multiplication across recurrent layers by a diffusion convolution \cite{liu2020intro}.
+Motivated by the traffic forecasting problem, where spatial dependencies are directional (non-Euclidean), Li et al. \cite{li2018dcrnn} recast the spatio-temporal evolution of a variable as a diffusion process on a directed graph, where every node corresponds to a sensor.
+Learning is performed via (1) diffusion convolution, further integrated with a (2) seq-to-seq learning framework, and a (3) scheduled sampling for modeling long-term dependencies (fig. \ref{fig:dcrnn}).
 \begin{figure}[H]
 	\centering
  	\caption{The DCRNN architecture.}
@@ -374,7 +420,9 @@ For some forecasting problems such as for the weather-conditioned wind power gen
 \end{figure}
 
 \noindent
-\textbf{ST-GCN.} A spatial-temporal graph is generated by stacking graph frames from all timesteps, each frame representing the graph state at a specific time (\ref{fig:stgcn}). The spatial-temporal graph is partitioned, and to each of its nodes is assigned a weight vector. Finally, a graph convolution is performed on the weighted spatial-temporal graph.
+\textbf{ST-GCN.} A spatial-temporal graph is generated by stacking graph frames from all timesteps, each frame representing the graph state at a specific time (fig. \ref{fig:stgcn}).
+The spatial-temporal graph is partitioned, and to each of its nodes is assigned a weight vector.
+Finally, a graph convolution is performed on the weighted spatial-temporal graph.
 \begin{figure}[H]
 	\centering
  	\caption{ST-GCN underlying principle.}
@@ -385,7 +433,10 @@ For some forecasting problems such as for the weather-conditioned wind power gen
 \end{figure}
 
 \noindent
-\textbf{GWNet.} The Graph Wavenet uses as building blocks a Temporal Convolution Network (TCN) and a Graph Convolution Network (GCN) for capturing spatio-temporal dependencies in every module. A core idea is the usage of a learnable self-adaptative adjacency matrix, which allows node dependencies to change over time and not necessarily be determined by their distances \cite{wu2019graphwavenet, liu2020intro}.
+\textbf{GWNet.} The Graph Wavenet uses as building blocks a Temporal Convolution Network (TCN) and a Graph Convolution Network (GCN) for capturing temporal and spatial correlations respectively in every module.
+As stacks of modules each capturing both spatial and temporal dependencies are used, this architecture allows models to capture correlations not exclusively temporal nor exclusively spatial.
+Another core idea is the usage of a learnable self-adaptative adjacency matrix, which allows node dependencies to change over time and not necessarily be determined by their distances \cite{wu2019graphwavenet, liu2020intro}.
+Euclidean distances $D_{ij}$ between every pair $(i,j)$ of districts are used just for initializing the adjacency matrix according to the Gaussian Kernel $A_{ij} = exp(-D_{ij}^2/2\sigma_{D}^2)$, which the authors normalize columnwise for faster convergence.
 \begin{figure}[H]
 	\centering
     \caption{The Graph Wavenet architecture.}
@@ -397,8 +448,8 @@ For some forecasting problems such as for the weather-conditioned wind power gen
 
 \subsection{Accuracy Metrics}
 
-The usual accuracy metrics in spatio-temporal forecasting are similar to their counterparts in the temporal setting, the main difference concerning the aggregation in space over the $v \in |V|$ regions.
-We present some of them in \ref{eq:mae}, \ref{eq:mape}, \ref{eq:rmse}.
+The usual accuracy metrics in spatio-temporal forecasting are similar to their counterparts in the temporal setting, the main difference concerning the aggregation via averaging across space over the $v \in |V|$ regions, besides the aggregation across timesteps.
+We present some of them in eqs. \ref{eq:mae}, \ref{eq:mape}, \ref{eq:rmse}.
 
 \begin{equation}\label{eq:mae_multi}
     MAE = \frac{1}{|V|(T'-T-1)} \Sigma_{v=1}^{|V|} \Sigma_{t=T+1}^{T'} | \bm{\hat{y}}^{(v)}_{t} - \bm{y}_{t}^{(v)} |
