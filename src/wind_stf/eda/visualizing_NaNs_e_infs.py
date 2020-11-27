@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # Slice
     targets = pars['modeling']['targets']
-    df = df[targets]
+    # df = df[targets]
 
     # Plot
     display = True
@@ -56,9 +56,13 @@ if __name__ == '__main__':
             y=df.index,
             zmax=1.0,
             zmin=0.0,
-            colorscale='Inferno'
+            colorscale='Inferno',
+            # showscale=False,
             )
         )
+
+        # configure axes
+        # fig.update_coloraxes(showscale=False)
 
         # Configure layout
         fig.update_layout(
@@ -67,11 +71,23 @@ if __name__ == '__main__':
                 tickmode='array',
                 tickvals=[pd.Timestamp(f'{year}-01-01') for year in range(2000, 2017) ],
                 ticktext=[year for year in range(2000, 2017)],
-            )
+            ),
+            xaxis=dict(
+                showticklabels=False,
+                ticks='',
+            ),
+            coloraxis_colorbar=dict(
+                # lenmode='pixels', len=700,
+                # showscale=False,
+            ),
+            # height=600,
+            width=800,
+            margin=dict(l=0, r=0, t=0, b=0),
+
         )
 
         # fig.show()
-        fig.write_image("/home/jonasmmiguel/Documents/learning/poli/thesis/wind-stf/data/08_reporting/data_availability.jpg")
+        fig.write_image("/home/jonasmmiguel/Documents/learning/poli/thesis/wind-stf/data/08_reporting/data_availability.pdf", scale=3.0)
     # Validate
     # validate_data(df)
 

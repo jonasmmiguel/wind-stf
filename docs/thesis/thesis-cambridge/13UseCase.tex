@@ -61,14 +61,39 @@ Both datasets were compiled and prepared by authors in \cite{becker2017completio
 We carried out an exploratory data analysis on both datasets to better understand their generation process, as well as to identify data patterns and limitations.
 We then used these findings to not only guide our design decisions on both preprocessing and modeling, but also to define our key modeling assumptions.
 
-We first assessed the data availability.
+We first assessed the data availability and consistency.
+We verified that some districts either do not present data (columns mostly dark in fig. \ref{fig:availability_overall}), mostly due to having no capacity installed, or to presenting power generation entries at dates earlier than their first commissionings.
+We attribute the latter to commissioning data being wrongly assigned to later timestamps than when the districts effectively started harvesting power.
+This motivated selecting districts and timespans for which data is both more available and consistent \ref{fig:availability_target}.
 
 In a second step in our analysis, we identified major spatial and temporal conditions underlying the data generation.
-Figure \ref{fig:germany_maps} highlights the most relevant findings.
+Fig. \ref{fig:availability_overall} presents heatmaps for power generation normalized by the installed power at each timestep (i.e. the CF).
+A clear pattern of seasonality can be seen, with yearly peaks in power generation between december and january represented by horizontal lines spanning across all harvesting districts.
+We also notice some regions present consistently less CF than others (e.g. the group of leftmost columns in \ref{fig:availability_overall}).
+Inquiries indicated they represent regions such as Baden-Würtemberg where most of the capacity installed corresponds to older commissionings.
+This is consistent with the fact that technological advances improved CF of new installations over time.
+
+Other key findings concerning spatial and temporal patterns are highlighted in figure \ref{fig:germany_maps}.
 Figure \ref{fig:turbine_locations} shows how the 23191 onshore wind turbines are spatially distributed across 296 districts harvesting wind power (fig. \ref{fig:installed_capacity}).
 The northern region still concentrates most of the generation capacity (fig. \ref{fig:installed_capacity}) and concentrates most of the largest units so as to harness the local higher wind power availability \cite{windatlas}.
 Evidence for a contrasting recent trend to this can be seen in figure \ref{fig:spacetime_turbines}.
 Over the last decade, Germany has been commissioning more midsized turbines closer to locations of high electricity demand at the southern and central Germany so as to prevent curtailments due to network congestion \cite{engeland2017variability}.
+
+\begin{figure}[H]%
+    \centering
+    \caption{Capacity Factors across districts (columns) and time.}
+    \label{fig:availability}
+    \subfloat[][CFs for the 296 districts harvesting wind energy in Germany. Same-region districts are grouped.]{
+        \label{fig:availability_overall}
+        \includegraphics[width=0.75\textwidth]{data_availability_overall.pdf}
+    }
+    \\
+    \subfloat[][CFs for the 33 modeled districts.]{
+        \label{fig:availability_targets}
+        \includegraphics[width=0.75\textwidth]{data_availability_targets.pdf}
+    }
+\end{figure}
+
 
 \begin{figure}[H]%
     \centering
