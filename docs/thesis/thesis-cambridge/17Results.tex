@@ -5,18 +5,22 @@ The choice of metrics was made in accordance to the use case requirements, as de
 Table \ref{tab:trainingtimes} show the overall training times for each method, normalized by the number of districts (33) and the number of train-test splits (52).
 We found that GWNet models outperformed the statistical counterpart models by more than 38\% in terms of RMSE, while also presenting the shortest training times.
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Performances of different forecasting approaches for the wind power generation use case. Metrics are calculated on basis of CF values at test timestamps.}
 \label{tab:performances}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{c|rrr}
+\toprule
+Model  & \multicolumn{1}{c}{MAE} & \multicolumn{1}{c}{RMSE} & \multicolumn{1}{c}{MdRAE}  \\
 \hline
-Model  & \multicolumn{1}{c}{MAE} & \multicolumn{1}{c}{RMSE} & \multicolumn{1}{c}{MdRAE} \\ \hline
-ARIMA  & 0.143 (0.078)           & 0.174 (0.093)            & 0.963 (0.563)             \\
-HW-ES  & 0.168 (0.083)           & 0.228 (0.107)            & 1.106 (0.521)             \\
-NBEATS & 0.105 (0.050)           & 0.131 (0.066)            & 0.984 (0.389)             \\
-GWNet  & \textbf{0.086 (0.045)}  & \textbf{0.107 (0.056)}   & \textbf{0.812 (0.335)}    \\ \hline
+ARIMA  & 0.143 (0.078)           & 0.174 (0.093)            & 0.963 (0.563)              \\
+HW-ES  & 0.168 (0.083)           & 0.228 (0.083)            & 0.966 (0.244)              \\
+NBEATS & 0.105 (0.050)           & 0.131 (0.066)            & 0.984 (0.389)              \\
+GWNet  & \textbf{0.086 (0.045)}  & \textbf{0.107 (0.056)}   & \textbf{0.812 (0.335)}     \\
+\bottomrule
 \end{tabular}
+}
 \end{table}
 
 \begin{table}[]

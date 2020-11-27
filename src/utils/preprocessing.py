@@ -30,7 +30,7 @@ class MakeStrictlyPositive(TransformerMixin, BaseEstimator):
 
 registered_transformers = {
     'get_quantile_equivalent_normal_dist': QuantileTransformer(
-                                                output_distribution='normal',
+                                                output_distribution='uniform',
                                                 random_state=2020,
                                             ),
     'make_strictly_positive': MakeStrictlyPositive(),

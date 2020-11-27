@@ -1,31 +1,34 @@
 \chapter{Experiments Settings}\label{chap:experiments}
+In our investigations, we consider ARIMA, HWES, NBEATS and GWNet models.
 All forecasting approaches are trained and evaluated for 33 pre-defined districts in northern Germany on a same set of 52 weeks in 2015 (52 train-test splits).
 Training time windows are set each to range from 2005-01-01 to the respective the train-test split position in 2015.
 Table \ref{tab:experimentssettings} describes the hyperparameters configurations deviating from the original implementations, after adaptation to our use case (e.g. graph nodes in GWNet) and manual tuning.
 Table \ref{tab:experimentssettings} also summarizes the preprocessing steps performed for every method.
-Quantile transformations to normal distribution were applied to every time series \cite{sklearn2020qtransformation}.
-Another step was used for Holt-Winters' Exponential Smoothing experiments, for meeting a requirement particular to this method: strictly positive values for models inputs.
+Quantile transformations \cite{sklearnQtransform} to normal distribution were applied to every time series \cite{sklearnQtransform}.
+In particular, for meeting the requirement from Holt-Winters' Exponential Smoothing of having strictly positive values for models inputs, in experiments on this method we applied an offsetting transformation.
+To the values of every time series we add the absolute of the minimum value of every time series, plus $1.0$.
 All of our experiments were conducted under a computer environment with 1 Intel Core i7-8700K @3.70 GHz, one NVIDIA GeForce GTX 1080 Ti GPU card, and 64 GB RAM.
 
-The chosen set of metrics MAE, RMSE and MdRAE was chosen for the purpose of models evaluation by taking as criteria:
+For models evaluation, we chose the set of metrics MAE, RMSE and MdRAE.
+Below we state the criteria underlying this choice.
 \begin{itemize}
-    \item (a) comparability to other use cases and future research: it is desirable to have error metrics widely used in forecasting community, so as to allow comparability;
-    \item (b) coherence with expected values for $\hat{y}_t$: the variable of interest CF often assume near-zero values, rendering percentage-based metrics innappropriate;
-    \item (c) same scale as $y_t$: it is desirable to have error metrics having the same scale as the CF itself;
-    \item (d) improvement over baseline: it is desirable to assess how much better every approach perform in comparison to a baseline (naïve) approach;
-    \item (e) coherence with expected values for $e_{t, na\ddot{i}ve}$: as CF $\in [0, 1]$, then $e_{t, na\ddot{i}ve} \in [0, 1]$, as naïve model forecats are simply the last observation in training dataset of a given train-test split.
+    \item (a) \textbf{Comparability to other use cases and future research.} It is desirable to have error metrics widely used in forecasting community, so as to allow comparability;
+    \item (b) \textbf{Coherence with expected values for $\hat{y}_t$.} The variable of interest CF often assume near-zero values, rendering percentage-based metrics innappropriate;
+    \item (c) \textbf{Same scale as $y_t$.} It is esirable to have error metrics having the same scale as the CF itself;
+    \item (d) \textbf{Comparison to baseline.} It is desirable to assess how much better every approach performs in comparison to a baseline (naïve) approach;
+    \item (e) \textbf{Coherence with expected values for $e_{t, na\ddot{i}ve}$.} As CF $\in [0, 1]$, then $e_{t, na\ddot{i}ve} \in [0, 1]$, as naïve model forecats are simply the last observation in training dataset of a given train-test split.
     Errors relative to this may present outliers.
     To prevent this from biasing our estimates, we favor median-based metrics such as MdRAE over mean-based such as MASE.
 \end{itemize}
 
-\begin{table}\label{tab:experimentssettings}
+\begin{table}[H]
 \centering
 \setlength{\extrarowheight}{0pt}
 \addtolength{\extrarowheight}{\aboverulesep}
 \addtolength{\extrarowheight}{\belowrulesep}
 \setlength{\aboverulesep}{0pt}
 \setlength{\belowrulesep}{0pt}
-\caption{Experiments settings: preprocessing steps, hyperparameters configurations deviating from the original implementations, frameworks and implementations used.}
+\caption{Experiments settings: preprocessing steps, hyperparameters configurations deviating from the original implementations, frameworks and implementations used.} \label{tab:experimentssettings}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
