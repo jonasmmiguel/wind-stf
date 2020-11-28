@@ -1,17 +1,17 @@
 \graphicspath{{./figures/pipeline/}}
 
 \chapter{Data Pipeline}
-We developed a pipeline (fig. \ref{fig:project_pipeline}) comprising (1) a data engineering pipeline, and (2) a data science pipeline.
-We devoted significant part of our effort into following existing and developing best practices in data science development standards, so as to ensure reproducibility of results as well as reusability of methods and tools also in other use cases.
-Among the key Python frameworks we used to attain that is was the McKinsey's Kedro \cite{kedro}.
+We developed a pipeline (fig. \ref{fig:project_pipeline}) comprising (1) a data engineering pipeline and (2) a data science pipeline.
+We devoted a significant part of our effort to following existing and developing best practices in data science development standards to ensure reproducibility of results and reusability of methods and tools in other use cases.
+This was done, for instance, by building the data pipeline based on Python frameworks such as McKinsey's Kedro \cite{kedro}.
 The complete implementation is available in \cite{windstfgithub}.
 
 \begin{figure}[H]
-	\centering
+   \centering
     \caption{The project pipeline.}
     \includegraphics[width=0.8\linewidth,trim={7cm 7cm 7cm 2cm},clip]{pipeline_project.pdf}
     %\includesvg{pipeline_project}
-	\label{fig:project_pipeline}
+   \label{fig:project_pipeline}
 \end{figure}
 
 
@@ -19,46 +19,46 @@ The complete implementation is available in \cite{windstfgithub}.
 The data engineering pipeline (fig. \ref{fig:pipeline_de}) encompasses all the data processing steps involved between (a) measurements and sensors datasets and (b) daily capacity factors, sensors graph inputs.
 
 \begin{figure}[H]
-	\centering
+   \centering
     \caption{The data engineering pipeline.}
     \includegraphics[width=1.0\linewidth,trim={7cm 7cm 7cm 0cm},clip]{pipeline_de.pdf}
-	\label{fig:pipeline_de}
+   \label{fig:pipeline_de}
 \end{figure}
 
 \vspace{1em}
 \noindent
-\textbf{Get Capacity Installed Time Series.}  We load the sensors dataset and build a time series for the capacity installed in every district, essentially by grouping  turbine entries by district, and performing a cumulated sum of power ratings over the commissioning date-sorted entries.
+\textbf{Get Capacity Installed Time Series.}  We load the sensors dataset and build a time series for the capacity installed in every district, essentially by grouping turbine entries by district and performing a cumulated sum of power ratings over the commissioning date-sorted entries.
 
 \vspace{1em}
 \noindent
-\textbf{Get Power Centroids.}  A centroid position is defined for every district, not by its baricenter, but from the rated power-weighted average of all its single turbines coordinates. In practice, the power centroid changes its position every time  a new turbine is commissioned. We neglect this variation over time, and take the resulting average as sufficiently accurate for its purpose. Namely, we use the power centroids for calculating representative Euclidean distances between districts, which we used for the EDA and also when calculating the adjacency matrix initialization values for the graph-based spatio-temporal forecasting methods.
+\textbf{Get Power Centroids.}  A centroid position is defined for every district, not by its barycenter, but from the rated power-weighted average of all its single turbines coordinates. In practice, the power centroid changes its position every time a new turbine is commissioned. We neglect this variation over time and take the resulting average as sufficiently accurate for its purpose. Namely, we use the power centroids for calculating representative Euclidean distances between districts, which we used for the EDA, and also when calculating the adjacency matrix initialization values for the graph-based spatio-temporal forecasting methods.
 
 \vspace{1em}
 \noindent
-\textbf{Concatenate and Downsample.}  We concatenate the measurements dataset (power generated districtwise, in $kW$), which is provided for every year, into a single hourly dataframe, then downsample it into a daily measurements by summing same-day entries.
+\textbf{Concatenate and Downsample.}  We concatenate the measurements dataset (power generated district-wise, in $kW$), which is provided for every year separately, into a single hourly dataset, then downsample it into daily measurements by summing same-day entries.
 
 \vspace{1em}
 \noindent
-\textbf{Filter Districts.}   We filter out previously determined districts  which either represent outliers in spatial correlogram (3 from 296) or have zero installed capacity by 2015-01-01 (4 from 296).
-Also, districts where in 2005-01-01 a single turbine represents more than 50\% of its installed capacity (18 districts in total).
-Although the latter measure might represent a deviation from the industry use case, we perform it in favor of metrics representativity, as otherwise models overall performance metrics would be biased by low predictibility of ill-conditioned time series e.g. from districts where wind harvesting are still in early phases.
-Finally we select the 33 districts in northern Germany with the highest capacity installed as of 2015-12-31.
+\textbf{Filter Districts.}   We filter out previously determined districts which either represent outliers in spatial correlogram (3 from 296) or have zero installed capacity by 2015-01-01 (4 from 296).
+Also, districts where a single turbine represented more than 50\% of its installed capacity as of 2005-01-01 (18 districts in total).
+Although the latter measure might represent a deviation from the industry use case, we perform it in favor of metrics representativity. Otherwise, models' overall performance metrics would be biased by low predictability of ill-conditioned time series, e.g., from districts where wind harvesting is still in early phases.
+Finally, we select the 33 districts in northern Germany with the highest capacity installed as of 2015-12-31.
 
 \vspace{1em}
 \noindent
-\textbf{Transform kW to CF.}  Every entry in measurements time series dataset is normalized by the corresponding local installed capacity at the same day.
-This results in daily time series for capacity factors in every district.
+\textbf{Transform kW to CF.}  Every entry in the measurements time series dataset is normalized by the corresponding local installed capacity on the same day.
+This results in a daily time series for capacity factors in every district.
 
 \pagebreak
 
 \section{Data Science Pipeline}
-The data science pipeline (fig. \ref{fig:pipeline_ds}) processes (a) user-defined parameters, (b) the capacity factors dataset resulting from the data engineering pipeline and, when required, also (c) the power centroids.
+The data science pipeline (fig. \ref{fig:pipeline_ds}) processes (a) user-defined parameters, (b) the capacity factors dataset resulting from the data engineering pipeline, and, when required, also (c) the power centroids.
 
 \begin{figure}[H]
-	\centering
+   \centering
     \caption{The data engineering pipeline.}
     \includegraphics[width=1.0\linewidth,trim={6cm 2cm 6cm 0cm},clip]{pipeline_ds.pdf}
-	\label{fig:pipeline_ds}
+   \label{fig:pipeline_ds}
 \end{figure}
 
 \pagebreak
@@ -67,10 +67,10 @@ The data science pipeline (fig. \ref{fig:pipeline_ds}) processes (a) user-define
 \noindent
 \textbf{Get Initial Adjacency Matrix.}  We calculate the matrix of the pairwise Euclidean distances and transform it into an adjacency matrix.
 For initializing the values of the (constant) adjacency matrix in DCRNN or the self-adaptive adjacency matrix in the Graph WaveNet case, we follow the procedure in \cite{li2018dcrnn, wu2019graphwavenet} apply the Gaussian Kernel on the distances matrix, so that $A_{ij} = exp(-D_{ij}^2/2\sigma_{D}^2)$, where $\sigma_{D}$ is the standard deviation of the distances matrix.
-Also as in \cite{li2018dcrnn}, we promote sparsity in the adjacency matrix for computational efficiency by thresholding the entries in the adjacency matrix.
+Also, as in \cite{li2018dcrnn}, we promote sparsity in the adjacency matrix for computational efficiency by thresholding the entries in the adjacency matrix.
 However, instead of defining an arbitrary threshold value for $A_{ij}$, we prune adjacency values when the distances they are calculated from surpasses the decorrelation distance of 150 km.
-We then normalize columnwise by the Frobenius Norm for faster convergence.
-This node function is only processed in experiments for Graph Neural Network models, as they are the only methods considered which rely on an adjacency matrix.
+We then normalize its columns by their respective Frobenius Norm for faster convergence.
+This node function is only processed in Graph Neural Network models' experiments, as they are the only methods considered that rely on an adjacency matrix.
 
 \vspace{1em}
 \noindent
@@ -84,7 +84,7 @@ The positions are used to define 52 different train-test partitions, for which e
 \vspace{1em}
 \noindent
 \textbf{Train.}  We train a model for every train-test split as well as one for the entire scaled model inference dataset.
-In the case of single time series-modeling methods such as Holt-Winters Exponential Smoothing, the resulting model is actually a simple collection of univariate time series submodels.
+In single time series-modeling methods such as Holt-Winters Exponential Smoothing, the resulting model is a simple collection of univariate time series submodels.
 
 \vspace{1em}
 \noindent
