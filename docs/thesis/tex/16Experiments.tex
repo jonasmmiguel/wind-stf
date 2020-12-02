@@ -1,0 +1,46 @@
+\chapter{Experiments Settings}\label{chap:experiments}
+In our investigations, we consider ARIMA, HWES, NBEATS and GWNet models.
+All forecasting approaches are trained and evaluated for 33 pre-defined districts in northern Germany on a same set of 52 weeks in 2015 (52 train-test splits).
+Training time windows are set each to range from 2005-01-01 to the respective the train-test split position in 2015.
+Table \ref{tab:experimentssettings} describes the hyperparameters configurations deviating from the original implementations, after adaptation to our use case (e.g. graph nodes in GWNet) and manual tuning.
+Table \ref{tab:experimentssettings} also summarizes the preprocessing steps performed for every method.
+Quantile transformations \cite{sklearnQtransform} to normal distribution were applied to every time series \cite{sklearnQtransform}.
+In particular, for meeting the requirement from Holt-Winters' Exponential Smoothing of having strictly positive values for models inputs, in experiments on this method we applied an offsetting transformation.
+To the values of every time series we add the absolute of the minimum value of every time series, plus $1.0$.
+All of our experiments were conducted under a computer environment with 1 Intel Core i7-8700K @3.70 GHz, one NVIDIA GeForce GTX 1080 Ti GPU card, and 64 GB RAM.
+
+For models evaluation, we chose the set of metrics MAE, RMSE and MdRAE.
+Below we state the criteria underlying this choice.
+\begin{itemize}
+    \item (a) \textbf{Comparability to other use cases and future research.} It is desirable to have error metrics widely used in forecasting community, so as to allow comparability;
+    \item (b) \textbf{Coherence with expected values for $\hat{y}_t$.} The variable of interest CF often assume near-zero values, rendering percentage-based metrics innappropriate;
+    \item (c) \textbf{Same scale as $y_t$.} It is esirable to have error metrics having the same scale as the CF itself;
+    \item (d) \textbf{Comparison to baseline.} It is desirable to assess how much better every approach performs in comparison to a baseline (naïve) approach;
+    \item (e) \textbf{Coherence with expected values for $e_{t, na\ddot{i}ve}$.} As CF $\in [0, 1]$, then $e_{t, na\ddot{i}ve} \in [0, 1]$, as naïve model forecats are simply the last observation in training dataset of a given train-test split.
+    Errors relative to this may present outliers.
+    To prevent this from biasing our estimates, we favor median-based metrics such as MdRAE over mean-based such as MASE.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\setlength{\extrarowheight}{0pt}
+\addtolength{\extrarowheight}{\aboverulesep}
+\addtolength{\extrarowheight}{\belowrulesep}
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\caption{Experiments settings: preprocessing steps, hyperparameters configurations deviating from the original implementations, frameworks and implementations used.} \label{tab:experimentssettings}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\multicolumn{1}{c}{\multirow{2}{*}{Model}} & \multicolumn{2}{c}{Preprocessing}                                                                                                        & \multicolumn{2}{c}{\multirow{2}{*}{Hyperparameters}}                                                                                                                                          & \multirow{2}{*}{Framework}                                                                 & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Base\\ Implementation \end{tabular}}  \\
+\cline{2-3}
+\multicolumn{1}{c}{}                       & \begin{tabular}[c]{@{}c@{}}Quantile\\ Transform \end{tabular} & \begin{tabular}[c]{@{}c@{}}Offsetting\\to $\mathbb{R}_{>0}$\end{tabular} & \multicolumn{2}{c}{}                                                                                                                                                                          &                                                                                            &                                                                                  \\
+\hline
+\rowcolor[rgb]{0.91,0.91,0.91} ARIMA       & $\checkmark$                                                  &                                                                          & \begin{tabular}[c]{@{}>{\cellcolor[rgb]{0.91,0.91,0.91}}c@{}}p\\ q\\ d \end{tabular}                   & \begin{tabular}[c]{@{}>{\cellcolor[rgb]{0.91,0.91,0.91}}c@{}}3\\ 1\\ 1 \end{tabular} & \begin{tabular}[c]{@{}>{\cellcolor[rgb]{0.91,0.91,0.91}}c@{}}statsmodels\\\cite{seabold2010statsmodels}\end{tabular} & \cite{statsmodels2020arima}                                                                              \\
+HWES                                       & $\checkmark$                                                  & $\checkmark$                                                             & \begin{tabular}[c]{@{}c@{}}trend\\ seasonal\\ seasonal periods \end{tabular}                          & \begin{tabular}[c]{@{}c@{}}additive\\ multiplicative\\ 7 \end{tabular}               & \begin{tabular}[c]{@{}c@{}}statsmodels\\\cite{seabold2010statsmodels}\end{tabular}                                   & \cite{statsmodels2020hwes}                                                                              \\
+\rowcolor[rgb]{0.91,0.91,0.91} NBEATS      & $\checkmark$                                                  &                                                                          & \begin{tabular}[c]{@{}>{\cellcolor[rgb]{0.91,0.91,0.91}}c@{}}hidden layer units\\epochs\\early stopping \end{tabular} & \begin{tabular}[c]{@{}>{\cellcolor[rgb]{0.91,0.91,0.91}}c@{}}128\\ 100\\20 \end{tabular} & \begin{tabular}[c]{@{}>{\cellcolor[rgb]{0.91,0.91,0.91}}c@{}}PyTorch\\\cite{pytorch}\end{tabular}     & \cite{amitesh2020nbeats_forecast}                                                                              \\
+GWNet                                      & $\checkmark$                                                  &                                                                          & \begin{tabular}[c]{@{}c@{}}nodes\\output timesteps\\epochs\\early stopping\end{tabular}                & \begin{tabular}[c]{@{}c@{}}33\\7\\100\\20\end{tabular}                               & \begin{tabular}[c]{@{}c@{}}PyTorch\\\cite{pytorch}\end{tabular}                                       & \cite{xumwen2020spatial}                                                                              \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

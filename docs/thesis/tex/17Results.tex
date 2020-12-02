@@ -1,0 +1,54 @@
+\chapter{Results}
+
+Table \ref{tab:performances} summarizes the models' performances in terms of means and standard deviations for each metric, both estimated over all 33 districts and 52 train-test splits, for predictions of CF.
+The choice of metrics was made in accordance with the use case requirements, as described in chapter \ref{chap:experiments}.
+Table \ref{tab:trainingtimes} show the overall training times for each method, normalized by the number of districts (33) and the number of train-test splits (52).
+
+The most relevant finding was that GWNet models outperformed the statistical counterpart models by more than $38\%$ in terms of RMSE while also presenting the shortest training times.
+Also, only GWNet presents a significant improvement over the naïve model, while the relative error $MdRAE$ remained all close to 1.0 (no improvement) for all other methods.
+NBEATS, the univariate counterpart in machine learning in this investigation, presented generally better results than the statistical methods, with more than $25\%$ smaller RMSE.
+This came, however, at the expense of significantly higher computational costs, with up to 2 orders of magnitude higher than the others in terms of training time.
+
+We emphasize that the usage of $GPUs$ when training GWNet, as well as the absence of parallelization when statistical training models, probably biased the assessment of computational costs.
+In their current implementation, however, which is mostly close to the base implementations currently available, GWNet presented the best scalability among the four approaches.
+It was observed that, while the training time for the univariate approaches increased linearly with the number of districts, times for GWNet scaled sublinearly, even when no $GPU$ acceleration was used.
+
+
+\begin{table}
+\centering
+\caption{Performances of different forecasting approaches for the wind power generation use case. Metrics are calculated on basis of CF values at test timestamps.}
+\label{tab:performances}
+\resizebox{0.8\linewidth}{!}{%
+\begin{tabular}{c|rrr}
+\toprule
+Model  & \multicolumn{1}{c}{MAE} & \multicolumn{1}{c}{RMSE} & \multicolumn{1}{c}{MdRAE}  \\
+\hline
+ARIMA  & 0.143 (0.078)           & 0.174 (0.093)            & 0.963 (0.563)              \\
+HW-ES  & 0.168 (0.083)           & 0.228 (0.083)            & 0.966 (0.244)              \\
+NBEATS & 0.105 (0.050)           & 0.131 (0.066)            & 0.984 (0.389)              \\
+GWNet  & \textbf{0.086 (0.045)}  & \textbf{0.107 (0.056)}   & \textbf{0.812 (0.335)}     \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Computation time at training, in $s/(districts \cdot splits)$. Univariate models ARIMA, HW-ES and NBEATS were trained without paralellization. GWNet models were trained using GPU acceleration.}
+\label{tab:trainingtimes}
+\resizebox{0.5\linewidth}{!}{%
+\begin{tabular}{cr}
+\toprule
+Model  & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Training \\ Time\\ $[s/(districts \cdot splits)]$\end{tabular}}  \\
+\hline
+ARIMA  & 1.12                                                                                                           \\
+HW-ES  & 0.63                                                                                                           \\
+NBEATS & 40.6                                                                                                           \\
+GWNet  & 0.49                                                                                                           \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+
+
